@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FainTV 歡樂看 — 面試簡報</title>
+  <style>
+    /* ================================================================
+       Visual language extracted from references/style-ref-01~06.png
+       - light gray page + white folder card, thin black border
+       - big BLACK tab peeking from behind the card, top-left
+       - serif italic for brand / emphasis; huge REGULAR-weight caps
+       - stadium pills: white-outline / gray-fill / black-fill
+       - folder tabs row (ref-03), annotation pills + connector lines
+         (ref-05), tip box + photo cards (ref-06), collaborator cursor
+         badge (refs 01/05/06)
+       ================================================================ */
+    :root {
+      --ink: #111111;
+      --paper: #FFFFFF;
+      --page: #EFEFEF;
+      --gray-fill: #D4D4D4;
+      --gray-soft: #E9E9E9;
+      --gray-text: #8A8A8A;
+      --teal: #7EC8D4;
+      --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Songti TC", "Noto Serif TC", serif;
+      --sans: "Helvetica Neue", -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --line: 1.3px;
+      --r-card: 30px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--sans);
+      background: var(--page);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck { position: relative; width: 100vw; height: 100vh; }
+
+    /* ---------- chrome ---------- */
+    .page-num {
+      position: fixed;
+      right: 30px;
+      bottom: 22px;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--gray-text);
+      font-variant-numeric: tabular-nums;
+    }
+    .page-num .circ {
+      width: 30px;
+      height: 30px;
+      border: var(--line) solid var(--ink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    .page-num.on-dark { color: rgba(255,255,255,0.6); }
+    .page-num.on-dark .circ { border-color: #fff; color: var(--ink); }
+
+    .nav-zone { position: fixed; top: 0; bottom: 0; width: 9%; z-index: 70; cursor: pointer; }
+    .nav-zone--prev { left: 0; }
+    .nav-zone--next { right: 0; }
+
+    /* ---------- slide + folder card ---------- */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: clamp(18px, 3.2vh, 34px) clamp(20px, 3.4vw, 44px);
+      background: var(--page);
+      z-index: 2;
+    }
+    .slide.is-active { display: flex; flex-direction: column; animation: in 0.45s var(--ease) both; }
+    @keyframes in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .slide.is-active { animation: none; } }
+
+    /* wrap leaves room for the tab that peeks above the card */
+    .folder {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding-top: 36px;
+    }
+    /* the big black tab BEHIND the card (refs 04 / 06) */
+    .folder::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 6px;
+      width: min(290px, 28%);
+      height: 96px;
+      background: var(--ink);
+      border-radius: 26px;
+    }
+    .sheet {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: var(--paper);
+      border: var(--line) solid var(--ink);
+      border-radius: var(--r-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sheet__inner {
+      flex: 1;
+      min-height: 0;
+      padding: clamp(36px, 5.6vh, 60px) clamp(38px, 5vw, 76px) clamp(30px, 4.6vh, 48px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* cover variant — ref-01: black page, GRAY tab */
+    .slide--dark { background: #0C0C0C; }
+    .slide--dark .folder::before { background: var(--gray-fill); }
+    .slide--dark .sheet { border-color: var(--ink); }
+
+    /* ---------- typography ---------- */
+    .si {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    /* huge caps, REGULAR weight, like AGENDA / ISSUES in refs */
+    .mega {
+      font-family: var(--sans);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 0.98;
+      text-transform: uppercase;
+    }
+    /* Chinese display headline */
+    .zh-head {
+      font-family: var(--sans);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.22;
+    }
+    .kicker {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 2vw, 30px);
+      line-height: 1.1;
+    }
+
+    /* ---------- pills ---------- */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: var(--line) solid var(--ink);
+      background: var(--paper);
+      font-size: clamp(13px, 1.1vw, 16px);
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .pill--gray { background: var(--gray-fill); }
+    .pill--black { background: var(--ink); color: #fff; }
+
+    /* ---------- shared bits ---------- */
+    .placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-soft);
+      border-radius: 18px;
+      color: var(--gray-text);
+      font-size: 12px;
+      text-align: center;
+      padding: 14px;
+      line-height: 1.5;
+    }
+
+    .tipbox {
+      display: inline-block;
+      border: var(--line) solid var(--ink);
+      border-radius: 16px;
+      background: var(--paper);
+      padding: 10px 18px;
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.45;
+    }
+    .tipbox strong { font-weight: 700; }
+    .tipbox em { font-family: var(--serif); font-style: italic; }
+
+    /* collaborator cursor badge (Canva style) */
+    .cursor-badge {
+      position: absolute;
+      z-index: 6;
+      background: var(--teal);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+    }
+    .cursor-badge svg {
+      position: absolute;
+      top: -13px;
+      right: -9px;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* circled serif number, ref-05 */
+    .circ-num {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border: var(--line) solid var(--ink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+    }
+
+    /* notes */
+    .notes {
+      display: none;
+      position: fixed;
+      left: 30px;
+      right: 130px;
+      bottom: 52px;
+      z-index: 90;
+      max-height: 26vh;
+      overflow: auto;
+      padding: 14px 18px;
+      background: var(--ink);
+      color: #eee;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .notes.is-visible { display: block; }
+    .notes::before {
+      content: "SPEAKER · N";
+      display: block;
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      margin-bottom: 6px;
+    }
+
+    /* ================= P1 cover ================= */
+    .p1 .sheet__inner {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: clamp(20px, 3vw, 44px);
+      align-items: stretch;
+      padding-right: clamp(24px, 3vw, 40px);
+    }
+    .p1-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 34em;
+      padding-left: clamp(0px, 1vw, 16px);
+    }
+    .p1-brand {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(52px, 6vw, 88px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .p1-title {
+      font-size: clamp(24px, 2.6vw, 38px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .p1-meta {
+      margin-top: clamp(32px, 7vh, 72px);
+      font-size: clamp(13px, 1.1vw, 16px);
+      line-height: 1.8;
+    }
+    .p1-meta .role { font-weight: 700; margin-top: 6px; }
+
+    .p1-visual {
+      position: relative;
+      align-self: center;
+      width: 100%;
+      height: min(62vh, 520px);
+    }
+    .p1-visual__photo {
+      position: absolute;
+      inset: 0 0 0 22%;
+      background:
+        linear-gradient(180deg, #E6E6E6 0%, #DCDCDC 55%, #CFCFCF 100%);
+      border-radius: 4px;
+    }
+    .p1-visual__photo::after {
+      /* stone-ish block, echoes ref-01 photo */
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 18%;
+      bottom: 0;
+      height: 34%;
+      background: linear-gradient(180deg, #F2F2F2, #DADADA);
+      border-radius: 10px 14px 0 0;
+    }
+    .p1-card {
+      position: absolute;
+      left: 6%;
+      top: 12%;
+      width: 40%;
+      max-width: 200px;
+      aspect-ratio: 10 / 15.5;
+      background: var(--ink);
+      border-radius: 24px;
+      color: #fff;
+      padding: 20px 18px;
+      transform: rotate(-4deg);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.28);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .p1-card .logo-ph {
+      align-self: flex-start;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.75);
+      border: 1px dashed rgba(255,255,255,0.45);
+      border-radius: 8px;
+      padding: 4px 10px;
+    }
+    .p1-card h4 {
+      font-size: clamp(15px, 1.4vw, 19px);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+    .p1-card .tail {
+      margin-top: auto;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.5;
+    }
+    .p1-phone {
+      position: absolute;
+      right: 7%;
+      bottom: 7%;
+      width: 32%;
+      max-width: 158px;
+      z-index: 3;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 3px solid var(--ink);
+      background: #111;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.30);
+      transform: rotate(5deg);
+    }
+    .p1-phone img { display: block; width: 100%; height: auto; }
+    .p1 .cursor-badge { left: 20%; top: 46%; }
+
+    /* ================= P2 issues (ref-04) ================= */
+    .p2 .sheet__inner {
+      padding-top: clamp(48px, 9vh, 88px);
+    }
+    .p2-head .si { display: block; font-size: clamp(30px, 3.2vw, 46px); margin-bottom: 2px; }
+    .p2-head .mega { font-size: clamp(56px, 7vw, 104px); }
+    .p2-pills {
+      margin-top: clamp(28px, 5vh, 48px);
+      align-self: flex-end;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 18px;
+      padding-right: clamp(8px, 6vw, 96px);
+    }
+    .p2-pills .pill { font-size: clamp(15px, 1.35vw, 20px); padding: 13px 34px; }
+    .p2-pills .pill:nth-child(2) { margin-right: 120px; }
+    .p2-pills .pill:nth-child(3) { margin-right: 36px; }
+    .p2-key {
+      margin-top: auto;
+      font-size: clamp(14px, 1.15vw, 17px);
+      color: var(--gray-text);
+    }
+    .p2-key strong { color: var(--ink); font-weight: 700; }
+
+    /* ================= P3 insight ================= */
+    .p3-head { margin-bottom: clamp(20px, 3.4vh, 34px); }
+    .p3-head .zh-head { font-size: clamp(30px, 3.6vw, 50px); }
+    .p3-head .zh-head .si { font-size: 1.04em; }
+    .p3-grid {
+      display: grid;
+      grid-template-columns: 0.92fr 1.18fr;
+      gap: clamp(18px, 2.4vw, 34px);
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .p3-media {
+      border: var(--line) solid var(--ink);
+      border-radius: 22px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+    .p3-media .placeholder { flex: 1; border-radius: 0; }
+    .p3-media__cap {
+      padding: 12px 18px;
+      border-top: var(--line) solid var(--ink);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .p3-list { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+    .p3-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px 20px;
+      border: var(--line) solid var(--ink);
+      border-radius: 20px;
+      background: var(--paper);
+    }
+    .p3-item p { font-size: clamp(14px, 1.2vw, 18px); line-height: 1.55; padding-top: 7px; }
+    .p3-item p strong { font-weight: 700; }
+
+    /* ================= P4 architecture (folder tabs, ref-03) ================= */
+    .p4-head { margin-bottom: clamp(22px, 4vh, 40px); }
+    .p4-head .si { display: block; font-size: clamp(20px, 1.9vw, 27px); margin-bottom: 4px; }
+    .p4-head .zh-head { font-size: clamp(30px, 3.4vw, 46px); }
+    .p4-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 1.6vw, 24px);
+      align-items: end;
+      padding: 0 clamp(4px, 1vw, 14px);
+    }
+    .ftab {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 16px 22px 14px;
+      border: var(--line) solid var(--ink);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      background: var(--paper);
+      position: relative;
+      top: var(--line);
+    }
+    .ftab--black { background: var(--ink); color: #fff; }
+    .ftab--gray { background: var(--gray-fill); }
+    .ftab h3 {
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      font-family: var(--sans);
+    }
+    .ftab .eq { font-family: var(--serif); font-style: italic; font-size: clamp(15px, 1.4vw, 20px); }
+    .ftab .arr { margin-left: auto; font-size: clamp(16px, 1.5vw, 22px); font-weight: 300; line-height: 1; }
+    .p4-body {
+      border-top: var(--line) solid var(--ink);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 1.6vw, 24px);
+      padding: clamp(16px, 2.6vh, 26px) clamp(4px, 1vw, 14px) 0;
+      flex: 1;
+      min-height: 0;
+    }
+    .p4-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      font-size: clamp(13px, 1.15vw, 16px);
+      line-height: 1.5;
+    }
+    .p4-col ul li::before { content: "→ "; color: var(--gray-text); }
+    .p4-col .thumb {
+      margin-top: 14px;
+      border: var(--line) solid var(--ink);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .p4-col .thumb img {
+      display: block;
+      width: 100%;
+      height: 92px;
+      object-fit: cover;
+      object-position: left top;
+    }
+    .p4-foot { margin-top: clamp(14px, 2.6vh, 24px); align-self: center; }
+
+    /* ================= P5 TV (annotation style, ref-05) ================= */
+    .p5-head { margin-bottom: clamp(18px, 3vh, 30px); display: flex; align-items: flex-start; gap: 18px; }
+    .p5-head .circ-num { margin-top: 8px; }
+    .p5-head .si { display: block; font-size: clamp(19px, 1.8vw, 26px); margin-bottom: 4px; }
+    .p5-head .zh-head { font-size: clamp(28px, 3.2vw, 44px); }
+    .p5-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: clamp(20px, 3vw, 44px);
+      flex: 1;
+      min-height: 0;
+    }
+    .p5-imgs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 0.85fr;
+      gap: 14px;
+      min-height: 0;
+    }
+    .p5-imgs .ph {
+      border: var(--line) solid var(--ink);
+      border-radius: 18px;
+      background: var(--gray-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-text);
+      font-size: 12px;
+      text-align: center;
+      padding: 12px;
+      line-height: 1.5;
+      min-height: 0;
+    }
+    .p5-imgs .span2 { grid-column: 1 / -1; }
+    .p5-annos { display: flex; flex-direction: column; justify-content: center; gap: clamp(18px, 3.4vh, 34px); }
+    .anno { display: flex; align-items: flex-start; gap: 0; }
+    .anno__line {
+      flex-shrink: 0;
+      width: clamp(28px, 3.4vw, 64px);
+      height: var(--line);
+      background: var(--ink);
+      margin-top: 20px;
+      position: relative;
+    }
+    .anno__line::before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: -3.5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink);
+    }
+    .anno__body { padding-left: 14px; }
+    .anno__body .pill { font-weight: 600; }
+    .anno__desc {
+      margin-top: 8px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(12.5px, 1.05vw, 15px);
+      line-height: 1.55;
+      color: var(--ink);
+      max-width: 30em;
+    }
+    .p5-wcag {
+      margin-top: 4px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--gray-text);
+    }
+    .p5-wcag strong { color: var(--ink); font-weight: 700; letter-spacing: 0.1em; }
+
+    /* ================= P6 mobile ================= */
+    .p6-head { margin-bottom: clamp(10px, 2vh, 18px); }
+    .p6-head .si { display: block; font-size: clamp(19px, 1.8vw, 26px); margin-bottom: 2px; }
+    .p6-head .zh-head { font-size: clamp(28px, 3.2vw, 44px); }
+    .p6-phones {
+      display: flex;
+      gap: clamp(10px, 1.4vw, 18px);
+      justify-content: center;
+      align-items: flex-end;
+      flex: 1;
+      min-height: 0;
+      padding: 6px 0 10px;
+      position: relative;
+    }
+    .phone {
+      flex: 1;
+      max-width: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .phone__frame {
+      width: 100%;
+      border-radius: 20px;
+      border: 2.5px solid var(--ink);
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+    }
+    .phone__frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: min(42vh, 380px);
+      object-fit: cover;
+      object-position: top center;
+    }
+    .phone__cap {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 12.5px;
+      color: var(--ink);
+    }
+    .p6-phones .cursor-badge { right: 26%; top: 40%; }
+    .p6-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .p6-tip { text-align: center; }
+
+    /* ================= P7 impact ================= */
+    .p7-head { margin-bottom: clamp(14px, 2.4vh, 22px); }
+    .p7-head .si { display: block; font-size: clamp(20px, 1.9vw, 28px); margin-bottom: 2px; }
+    .p7-head .mega { font-size: clamp(48px, 6vw, 88px); }
+    .p7-metrics {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 920px;
+    }
+    .metric {
+      display: grid;
+      grid-template-columns: minmax(230px, 0.9fr) 1fr;
+      gap: 20px;
+      align-items: baseline;
+      padding: clamp(16px, 3vh, 26px) 0;
+      border-bottom: var(--line) solid var(--ink);
+    }
+    .metric:first-child { border-top: var(--line) solid var(--ink); }
+    .metric__num {
+      font-size: clamp(40px, 5vw, 72px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric__label {
+      font-size: clamp(15px, 1.4vw, 21px);
+      font-weight: 400;
+      color: var(--ink);
+    }
+    .metric__label .si { color: var(--gray-text); }
+
+    /* ================= P8 takeaway ================= */
+    .p8 .sheet__inner { align-items: center; justify-content: center; text-align: center; }
+    .p8-quote {
+      font-size: clamp(30px, 3.6vw, 52px);
+      font-weight: 700;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      max-width: 17em;
+      text-wrap: balance;
+    }
+    .p8-quote .si { font-weight: 400; font-size: 1.05em; white-space: nowrap; }
+    .p8-sub { margin-top: clamp(24px, 4.6vh, 44px); display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+    /* ================= print ================= */
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      html, body { overflow: visible; height: auto; background: #fff; }
+      .page-num, .nav-zone, .notes { display: none !important; }
+      .deck { width: auto; height: auto; }
+      .slide {
+        position: relative;
+        display: flex !important;
+        animation: none !important;
+        width: 297mm;
+        height: 210mm;
+        page-break-after: always;
+        break-after: page;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .slide:last-child { page-break-after: auto; }
+    }
+
+    @media (max-width: 900px) {
+      .p1 .sheet__inner, .p3-grid, .p5-grid { grid-template-columns: 1fr; }
+      .p4-tabs, .p4-body { grid-template-columns: 1fr; }
+      .ftab { border-bottom: var(--line) solid var(--ink); border-radius: 20px; top: 0; }
+      .p4-body { border-top: none; }
+      .p2-pills { align-self: flex-start; align-items: flex-start; padding-right: 0; }
+      .p2-pills .pill { margin-right: 0 !important; }
+      .p1-visual { height: 260px; }
+      .metric { grid-template-columns: 1fr; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="page-num" id="pageNum"><span class="circ">1</span> / 08</div>
+    <div class="nav-zone nav-zone--prev" id="navPrev" aria-label="上一頁"></div>
+    <div class="nav-zone nav-zone--next" id="navNext" aria-label="下一頁"></div>
+
+    <!-- ============ P1 cover · ref-01: black page + gray tab ============ -->
+    <section class="slide slide--dark p1 is-active" data-slide="1">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p1-copy">
+              <h1 class="p1-brand">FainTV</h1>
+              <p class="p1-title">跨四種螢幕的串流訂閱體驗</p>
+              <div><span class="pill">台灣 OTT 影音串流服務｜電視盒 + Mobile / Tablet / Web</span></div>
+              <div class="p1-meta">
+                <p>主力客群：家庭與年長觀眾｜商業模式：訂閱制 + 商城</p>
+                <p class="role">My Role — UI/UX Designer · 2 Designers · 1 PM · 3 Engineers</p>
+              </div>
+            </div>
+            <div class="p1-visual" aria-hidden="true">
+              <div class="p1-visual__photo"></div>
+              <div class="p1-card">
+                <span class="logo-ph">logo</span>
+                <h4>Stream<br />across<br />screens</h4>
+                <p class="tail">Subscription for the whole family — since day one.</p>
+              </div>
+              <div class="cursor-badge">Rowan
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 3 L19 11 L12.5 12.8 L9.5 19 Z" fill="#7EC8D4" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="p1-phone"><img src="./assets/m-05.jpg" alt="" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        FainTV 歡樂看是台灣的影音串流服務，用戶透過電視盒在客廳看片，也能在手機、平板、網頁上使用，服務超過一百萬用戶。商業模式是訂閱制加內建商城——所以「讓用戶完成訂閱和付款」直接就是營收命脈。我擔任 UI/UX Designer，負責跨裝置的設計規劃。
+      </aside>
+    </section>
+
+    <!-- ============ P2 issues · ref-04 ============ -->
+    <section class="slide p2" data-slide="2">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p2-head">
+              <span class="si">Main</span>
+              <h2 class="mega">Issues</h2>
+            </div>
+            <div class="p2-pills">
+              <span class="pill">新用戶無法完成訂閱</span>
+              <span class="pill pill--gray">裝置體驗不一致</span>
+              <span class="pill">用戶黏著度不高</span>
+            </div>
+            <p class="p2-key">關鍵事實：TV 端任務完成率僅 <strong>30%</strong> · 主力用戶 ≈ <strong>60 歲</strong></p>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        我加入時有三個核心問題：各裝置體驗不一致、新用戶訂閱流程流失嚴重、以及 TV 端——我們最重要的螢幕——任務完成率只有 30%。關鍵背景是：TV 端的主力用戶是 60 歲左右的年長者。
+      </aside>
+    </section>
+
+    <!-- ============ P3 insight ============ -->
+    <section class="slide" data-slide="3">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p3-head">
+              <h2 class="zh-head">「訂閱的人，<span class="si">往往不是</span>看電視的人」</h2>
+            </div>
+            <div class="p3-grid">
+              <div class="p3-media">
+                <div class="placeholder">remote-typing / tv-input<br />年長用戶遙控器輸入（待補圖）</div>
+                <div class="p3-media__cap">Research — 問卷 + 年長用戶訪談</div>
+              </div>
+              <div class="p3-list">
+                <div class="p3-item">
+                  <span class="circ-num">1</span>
+                  <p>遙控器輸入 email 和卡號 ≈ <strong>不可能的任務</strong>（螢幕小字也看不清）</p>
+                </div>
+                <div class="p3-item">
+                  <span class="circ-num">2</span>
+                  <p><strong>很多長輩根本沒有 email</strong> → 改用電話號碼登入</p>
+                </div>
+                <div class="p3-item">
+                  <span class="circ-num">3</span>
+                  <p>訂閱多由<strong>子女</strong>在手機／電腦上代為完成</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        重設計前我們做了問卷和年長用戶訪談，發現三件顛覆假設的事。他們不是不想訂閱，是訂不了；很多長輩沒有 email；任務的實際執行者常常不是用戶本人。
+      </aside>
+    </section>
+
+    <!-- ============ P4 architecture · folder tabs, ref-03 ============ -->
+    <section class="slide" data-slide="4">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p4-head">
+              <span class="si">Architecture</span>
+              <h2 class="zh-head">讓每個螢幕做它該做的事</h2>
+            </div>
+            <div class="p4-tabs">
+              <div class="ftab ftab--black"><h3>TV</h3><span class="eq">= 看</span><span class="arr">↘</span></div>
+              <div class="ftab ftab--gray"><h3>Mobile</h3><span class="eq">= 訂</span><span class="arr">↘</span></div>
+              <div class="ftab"><h3>Web</h3><span class="eq">= 管</span><span class="arr">↘</span></div>
+            </div>
+            <div class="p4-body">
+              <div class="p4-col">
+                <ul>
+                  <li>語音操作</li>
+                  <li>電話號碼登入</li>
+                  <li>客服電話常駐</li>
+                </ul>
+              </div>
+              <div class="p4-col">
+                <ul>
+                  <li>子女代訂主場景</li>
+                  <li>掃卡輸入</li>
+                  <li>原生鍵盤 + 格式化</li>
+                </ul>
+              </div>
+              <div class="p4-col">
+                <ul>
+                  <li>帳務與訂閱紀錄</li>
+                  <li>查詢、下載明細</li>
+                </ul>
+                <div class="thumb"><img src="./assets/web-records.jpg" alt="Web 消費紀錄" /></div>
+              </div>
+            </div>
+            <div class="p4-foot"><span class="pill">電話登入取代 email 帳號體系 · 貫穿全裝置</span></div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        完整的訂閱與帳務放到 Web 和 Mobile；TV 徹底簡化，專注在「看」。介面各處保留清楚的客服電話，照顧獨居長者。
+      </aside>
+    </section>
+
+    <!-- ============ P5 TV · annotation style, ref-05 ============ -->
+    <section class="slide" data-slide="5">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p5-head">
+              <span class="circ-num">5</span>
+              <div>
+                <span class="si">TV design</span>
+                <h2 class="zh-head">為 3 公尺外的 60 歲眼睛設計</h2>
+              </div>
+            </div>
+            <div class="p5-grid">
+              <div class="p5-imgs">
+                <div class="ph">tv-checkout.jpg（待補圖）</div>
+                <div class="ph">tv-input.jpg（待補圖）</div>
+                <div class="ph span2">spec-focus-states.png · 焦點狀態規格（待補圖）</div>
+              </div>
+              <div class="p5-annos">
+                <div class="anno">
+                  <span class="anno__line"></span>
+                  <div class="anno__body">
+                    <span class="pill">單一焦點系統（黃框）</span>
+                    <p class="anno__desc">High-contrast focus visible from the couch — no hover, one thing at a time.</p>
+                  </div>
+                </div>
+                <div class="anno">
+                  <span class="anno__line"></span>
+                  <div class="anno__body">
+                    <span class="pill pill--gray">語音 UI 繞過遙控器輸入</span>
+                    <p class="anno__desc">Voice replaces the impossible task of typing with a remote.</p>
+                  </div>
+                </div>
+                <div class="anno">
+                  <span class="anno__line"></span>
+                  <div class="anno__body">
+                    <span class="pill">客服電話常駐</span>
+                    <p class="anno__desc">A phone number on every screen, for viewers who live alone.</p>
+                  </div>
+                </div>
+                <p class="p5-wcag"><strong>WCAG 2.1</strong> — 可感知：對比、字級 · 可操作：單焦點、語音</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        TV 端：語音操作介面 + 無障礙原則貫穿。迭代兩輪易用性測試。好的無障礙不是強迫用戶改變行為，而是尊重既有習慣。
+      </aside>
+    </section>
+
+    <!-- ============ P6 mobile ============ -->
+    <section class="slide" data-slide="6">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p6-head">
+              <span class="si">Mobile design</span>
+              <h2 class="zh-head">子女的五分鐘</h2>
+            </div>
+            <div class="p6-phones">
+              <figure class="phone">
+                <div class="phone__frame"><img src="./assets/m-01.jpg" alt="會員資料" /></div>
+                <figcaption class="phone__cap">01 會員</figcaption>
+              </figure>
+              <figure class="phone">
+                <div class="phone__frame"><img src="./assets/m-02.jpg" alt="付款方式" /></div>
+                <figcaption class="phone__cap">02 付款</figcaption>
+              </figure>
+              <figure class="phone">
+                <div class="phone__frame"><img src="./assets/m-03.jpg" alt="信用卡" /></div>
+                <figcaption class="phone__cap">03 掃卡</figcaption>
+              </figure>
+              <figure class="phone">
+                <div class="phone__frame"><img src="./assets/m-04.jpg" alt="訂單確認" /></div>
+                <figcaption class="phone__cap">04 確認</figcaption>
+              </figure>
+              <figure class="phone">
+                <div class="phone__frame"><img src="./assets/m-05.jpg" alt="完成" /></div>
+                <figcaption class="phone__cap">05 完成</figcaption>
+              </figure>
+              <div class="cursor-badge">子女
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 3 L19 11 L12.5 12.8 L9.5 19 Z" fill="#7EC8D4" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="p6-foot">
+              <span class="pill">掃卡輸入</span>
+              <span class="pill pill--gray">原生鍵盤 + 格式化</span>
+              <span class="pill">電視已同步啟用</span>
+            </div>
+            <div class="p6-tip">
+              <span class="tipbox"><strong>Tip:</strong> TV 用<em>語音</em>、手機用<em>相機</em> — 每個裝置用它最擅長的輸入方式。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        Mobile 是子女代訂主場景，整條流程為「快」設計：掃卡、原生鍵盤、完成頁告訴子女長輩不需再操作。
+      </aside>
+    </section>
+
+    <!-- ============ P7 impact ============ -->
+    <section class="slide" data-slide="7">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <div class="p7-head">
+              <span class="si">Results</span>
+              <h2 class="mega">Impact</h2>
+            </div>
+            <div class="p7-metrics">
+              <div class="metric">
+                <div class="metric__num">+45%</div>
+                <div class="metric__label">營收成長 <span class="si">— revenue</span></div>
+              </div>
+              <div class="metric">
+                <div class="metric__num">30% → 80%</div>
+                <div class="metric__label">年長用戶任務完成率 <span class="si">— task completion</span></div>
+              </div>
+              <div class="metric">
+                <div class="metric__num">20 → 5 分</div>
+                <div class="metric__label">最快完成訂閱時間 <span class="si">— time to subscribe</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        訂閱旅程重設計帶動 45% 營收成長；年長用戶完成率 30%→80%；訂閱時間 20 分→最快 5 分。
+      </aside>
+    </section>
+
+    <!-- ============ P8 takeaway ============ -->
+    <section class="slide p8" data-slide="8">
+      <div class="folder">
+        <div class="sheet">
+          <div class="sheet__inner">
+            <p class="p8-quote">跨裝置一致的，是<span class="si">心智模型</span>，不是介面。</p>
+            <div class="p8-sub">
+              <span class="pill pill--black">TV 負責看</span>
+              <span class="pill pill--gray">Web 負責交易</span>
+              <span class="pill">操作者甚至不是同一個人</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        一致性要定在行為層，不是像素層。這也是我看跨國品牌官網的方式——不同市場、裝置、B2C/B2B 角色，需要同一套設計邏輯的正確表達，而不是同一個版面的複製。
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+      var total = slides.length;
+      var current = 0;
+      var notesOn = false;
+      var pageNum = document.getElementById("pageNum");
+
+      function pad(n) { return n < 10 ? "0" + n : String(n); }
+
+      function syncNotes() {
+        slides.forEach(function (s, idx) {
+          var n = s.querySelector(".notes");
+          if (!n) return;
+          if (notesOn && idx === current) n.classList.add("is-visible");
+          else n.classList.remove("is-visible");
+        });
+      }
+
+      function show(i) {
+        if (i < 0 || i >= total) return;
+        slides[current].classList.remove("is-active");
+        current = i;
+        slides[current].classList.add("is-active");
+        pageNum.innerHTML = '<span class="circ">' + (current + 1) + "</span> / " + pad(total);
+        pageNum.classList.toggle("on-dark", slides[current].classList.contains("slide--dark"));
+        syncNotes();
+      }
+
+      function next() { show(current + 1); }
+      function prev() { show(current - 1); }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+          e.preventDefault(); next();
+        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+          e.preventDefault(); prev();
+        } else if (e.key === "n" || e.key === "N") {
+          e.preventDefault(); notesOn = !notesOn; syncNotes();
+        } else if (e.key === "Home") {
+          e.preventDefault(); show(0);
+        } else if (e.key === "End") {
+          e.preventDefault(); show(total - 1);
+        }
+      });
+
+      document.getElementById("navNext").addEventListener("click", next);
+      document.getElementById("navPrev").addEventListener("click", prev);
+
+      var touchX = null;
+      document.addEventListener("touchstart", function (e) {
+        touchX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      document.addEventListener("touchend", function (e) {
+        if (touchX === null) return;
+        var dx = e.changedTouches[0].screenX - touchX;
+        if (Math.abs(dx) > 50) { if (dx < 0) next(); else prev(); }
+        touchX = null;
+      }, { passive: true });
+
+      show(0);
+    })();
+  </script>
+</body>
+</html>
