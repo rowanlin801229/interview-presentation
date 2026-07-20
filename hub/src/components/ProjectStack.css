@@ -1,0 +1,54 @@
+.project-stack {
+  position: relative;
+  /* scroll room: one viewport per card */
+  height: calc(100vh * var(--card-count, 3));
+  height: calc(100dvh * var(--card-count, 3));
+  margin-top: 8vh;
+  --card-count: 3;
+}
+
+.project-stack__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-stack__stage {
+  position: relative;
+  width: min(92vw, 720px);
+  height: min(56vh, 420px);
+}
+
+@media (max-width: 800px) {
+  .project-stack__stage {
+    height: min(48vh, 340px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-stack {
+    margin-top: 4vh;
+    height: auto;
+  }
+
+  .project-stack__sticky {
+    position: relative;
+    height: auto;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 0 48px;
+  }
+
+  .project-stack__stage {
+    position: static;
+    width: min(92vw, 720px);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+}

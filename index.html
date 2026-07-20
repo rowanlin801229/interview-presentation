@@ -3,1019 +3,487 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FainTV — Interview Deck</title>
-  <!-- Optional web fonts; system fallbacks keep the deck readable offline -->
+  <title>Rowan Lin — Interview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    /* Portfolio-aligned hub: editorial dark folio, dusty rose ≤10%
+       Design north star: Cross-Platform Architect — restraint, craft, hierarchy */
     :root {
-      --bg: #0e0e0d;
-      --bg-elev: rgba(24, 24, 27, 0.72);
-      --ink: #f4f4f5;
-      --ink-2: #e4e4e7;
-      --muted: #a1a1aa;
-      --line: rgba(255, 255, 255, 0.10);
-      --line-strong: rgba(255, 255, 255, 0.16);
-      --card: rgba(24, 24, 27, 0.85);
-      --accent: #B84545;
+      --bg: #12110f;
+      --bg-2: #1a1916;
+      --ink: #f3f1ec;
+      --ink-2: #d8d4cb;
+      --muted: #8c877c;
+      --faint: #5c5850;
+      --line: rgba(243, 241, 236, 0.09);
+      --line-2: rgba(243, 241, 236, 0.16);
+      --rose: #B84545;
+      --rose-soft: rgba(184, 69, 69, 0.14);
       --serif: "Cormorant Garamond", Georgia, "Songti TC", "Noto Serif TC", serif;
-      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
-      --r: 16px;
+      --pad: clamp(28px, 5.5vw, 80px);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
+    html { scroll-behavior: smooth; }
+
+    body {
       font-family: var(--sans);
-      font-weight: 300;
-      background: var(--bg);
+      font-weight: 400;
+      background:
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(184, 69, 69, 0.07), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 0% 80%, rgba(184, 69, 69, 0.04), transparent 50%),
+        var(--bg);
       color: var(--ink-2);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
+      min-height: 100vh;
     }
 
-    .deck { position: relative; width: 100vw; height: 100vh; background: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
-    .page-num {
+    /* ---------- top bar ---------- */
+    .bar {
       position: fixed;
-      right: 28px;
-      bottom: 22px;
-      z-index: 80;
-      font-size: 12px;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px var(--pad);
+      background: linear-gradient(to bottom, rgba(18,17,15,0.92), transparent);
+      pointer-events: none;
+    }
+    .bar a, .bar span { pointer-events: auto; }
+    .bar__mark {
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
-      font-variant-numeric: tabular-nums;
     }
-    .page-num b { color: var(--ink); font-weight: 500; }
-
-    .nav-zone {
-      position: fixed; top: 0; bottom: 0; width: 8%;
-      z-index: 70; cursor: pointer;
+    .bar__mark em {
+      font-style: normal;
+      color: var(--ink);
+      font-weight: 500;
     }
-    .nav-zone--prev { left: 0; }
-    .nav-zone--next { right: 0; }
-
-    .slide {
-      position: absolute;
-      inset: 0;
-      display: none;
-      padding: clamp(28px, 5vh, 56px) clamp(32px, 5vw, 72px);
-      z-index: 2;
+    .bar__link {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
     }
-    .slide.is-active {
-      display: flex;
-      flex-direction: column;
-      animation: fadeUp 0.55s var(--ease) both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .slide.is-active { animation: none; }
+    .bar__link:hover {
+      color: var(--ink);
+      border-bottom-color: var(--rose);
     }
 
-    .slide__inner {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: end;
+      padding: clamp(100px, 14vh, 140px) var(--pad) clamp(48px, 8vh, 80px);
     }
 
-    /* typography */
-    .eyebrow {
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: clamp(10px, 1.6vh, 18px);
+      color: var(--rose);
+      margin-bottom: 22px;
     }
-    .brand {
+    .hero__eyebrow::after {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--rose);
+      opacity: 0.7;
+    }
+
+    .hero__name {
       font-family: var(--serif);
       font-style: italic;
       font-weight: 300;
-      font-size: clamp(56px, 8vw, 120px);
-      line-height: 0.92;
+      font-size: clamp(52px, 8.5vw, 104px);
+      line-height: 0.94;
       letter-spacing: -0.03em;
       color: var(--ink);
     }
-    .display {
-      font-family: var(--serif);
+    .hero__name em {
       font-style: italic;
-      font-weight: 300;
-      font-size: clamp(32px, 4.2vw, 64px);
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      text-wrap: balance;
-    }
-    .headline {
-      font-family: var(--sans);
-      font-weight: 500;
-      font-size: clamp(26px, 2.8vw, 40px);
-      line-height: 1.25;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-    }
-    .body { font-size: clamp(14px, 1.15vw, 17px); line-height: 1.65; color: var(--muted); }
-    .body strong { color: var(--ink-2); font-weight: 500; }
-    .meta { font-size: clamp(13px, 1.05vw, 15px); line-height: 1.7; color: var(--muted); }
-    .meta .role { color: var(--ink-2); font-weight: 500; margin-top: 6px; }
-
-    .rule {
-      height: 1px;
-      background: var(--line);
-      border: 0;
-      margin: clamp(18px, 3vh, 28px) 0;
+      color: var(--rose);
     }
 
-    /* cards / frames */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      overflow: hidden;
-    }
-    .shot {
-      display: block;
-      width: 100%;
-      height: auto;
-      background: #090908;
-    }
-    .shot--cover {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-    }
-    .cap {
-      font-size: 12px;
+    .hero__full {
+      margin-top: 14px;
+      font-size: 14px;
       letter-spacing: 0.04em;
       color: var(--muted);
-      margin-top: 8px;
-      line-height: 1.45;
-    }
-    .cap em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--ink-2);
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line-strong);
-      background: transparent;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--ink-2);
-      white-space: nowrap;
-    }
-    .pill--soft { background: rgba(255,255,255,0.04); }
-    .pill--accent {
-      border-color: rgba(184, 69, 69, 0.45);
-      color: #e8b4b4;
-    }
-
-    .notes {
-      display: none;
-      position: fixed;
-      left: 28px; right: 120px; bottom: 52px;
-      z-index: 90;
-      max-height: 26vh;
-      overflow: auto;
-      padding: 14px 18px;
-      background: rgba(18, 18, 17, 0.96);
-      border: 1px solid var(--line-strong);
-      border-radius: 12px;
-      color: #d4d4d8;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    .notes.is-visible { display: block; }
-    .notes::before {
-      content: "SPEAKER · N";
-      display: block;
-      color: var(--accent);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      margin-bottom: 6px;
-    }
-
-    /* ========== P1 ========== */
-    .p1 .slide__inner {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: clamp(28px, 4vw, 64px);
-      align-items: center;
-    }
-    .p1-title {
-      font-size: clamp(22px, 2.4vw, 34px);
-      font-weight: 400;
-      color: var(--ink-2);
-      margin: 18px 0 22px;
-      line-height: 1.35;
-    }
-    .p1-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-    .p1-phone {
-      justify-self: end;
-      width: min(100%, 260px);
-      border-radius: 22px;
-      border: 1px solid var(--line-strong);
-      overflow: hidden;
-      background: #000;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.55);
-    }
-    .p1-phone img { display: block; width: 100%; height: auto; }
-
-    /* ========== P2 ========== */
-    .p2-list {
-      margin-top: clamp(24px, 4vh, 40px);
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      max-width: 720px;
-    }
-    .p2-item {
-      display: flex;
-      gap: 18px;
-      align-items: baseline;
-      padding: clamp(16px, 2.6vh, 22px) 0;
-      border-top: 1px solid var(--line);
-      font-size: clamp(18px, 1.8vw, 26px);
-      font-weight: 400;
-      color: var(--ink);
-      line-height: 1.4;
-    }
-    .p2-item::before {
-      content: "";
-      width: 18px;
-      height: 1.5px;
-      background: var(--accent);
-      flex-shrink: 0;
-      margin-top: 0.7em;
-    }
-    .p2-item:last-child { border-bottom: 1px solid var(--line); }
-    .p2-context {
-      margin-top: auto;
-      padding-top: 28px;
-      font-size: clamp(14px, 1.2vw, 17px);
-      color: var(--muted);
-    }
-    .p2-context strong { color: var(--ink); font-weight: 500; }
-
-    /* ========== P3 ========== */
-    .p3-grid {
-      display: grid;
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: clamp(28px, 4vw, 56px);
-      flex: 1;
-      min-height: 0;
-      align-items: start;
-      margin-top: clamp(18px, 3vh, 28px);
-    }
-    .how-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 14px;
-    }
-    .how-step {
-      padding: 14px 0;
-      border-top: 1px solid var(--line);
-    }
-    .how-step:last-of-type { border-bottom: 1px solid var(--line); }
-    .how-step h4 {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--ink);
-      margin-bottom: 4px;
-    }
-    .how-step p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    .how-note {
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
-      font-style: italic;
-      font-family: var(--serif);
-    }
-    .p3-quote {
-      font-family: var(--serif);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(26px, 3vw, 42px);
-      line-height: 1.25;
-      color: var(--ink);
-      margin-bottom: 22px;
-      text-wrap: balance;
-    }
-    .insight {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 12px;
-      padding: 14px 0;
-      border-top: 1px solid var(--line);
-    }
-    .insight:last-of-type { border-bottom: 1px solid var(--line); }
-    .insight .n {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 18px;
-      color: var(--accent);
-    }
-    .insight p { font-size: clamp(14px, 1.15vw, 16px); line-height: 1.55; color: var(--ink-2); }
-    .design-q {
-      margin-top: 22px;
-      padding: 16px 18px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      font-size: clamp(13px, 1.1vw, 15px);
-      line-height: 1.55;
-      color: var(--ink-2);
-    }
-    .design-q span {
-      display: block;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    /* ========== P4 hero ========== */
-    .p4-sub {
-      font-size: clamp(14px, 1.2vw, 17px);
-      color: var(--muted);
-      max-width: 42em;
-      margin: 10px 0 clamp(16px, 2.6vh, 24px);
-      line-height: 1.55;
-    }
-    .trio {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: clamp(12px, 1.6vw, 22px);
-      flex: 1;
-      min-height: 0;
-    }
-    .col {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: var(--card);
-      padding: 14px 14px 16px;
-    }
-    .col-head {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .col-head h3 {
-      font-size: clamp(18px, 1.6vw, 22px);
+    .hero__role {
+      margin-top: 28px;
+      font-size: clamp(17px, 1.6vw, 21px);
       font-weight: 500;
       color: var(--ink);
       letter-spacing: -0.01em;
     }
-    .col-head .eq {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 15px;
-      color: var(--muted);
-    }
-    .col-shots {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-      min-height: 0;
-    }
-    .col-shots .frame {
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #090908;
-      flex: 1;
-      min-height: 0;
-    }
-    .col-shots .frame img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-    }
-    .col--tv .col-shots {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-    }
-    .col--mobile .col-shots {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      align-items: stretch;
-    }
-    .col--mobile .frame { aspect-ratio: 9 / 16; flex: none; }
-    .col--web .frame { flex: 1; min-height: 140px; }
-    .col .cap { margin-top: 12px; }
 
-    .unify-bar {
-      margin-top: clamp(12px, 2vh, 18px);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .unify-cell {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.03);
-    }
-    .unify-cell .lbl {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .unify-cell .lbl--u { color: var(--accent); }
-    .unify-cell .lbl--d { color: var(--muted); }
-    .unify-cell p {
-      font-size: clamp(12px, 1.05vw, 14px);
-      color: var(--ink-2);
-      line-height: 1.45;
-    }
-    .unify-line {
-      grid-column: 1 / -1;
-      text-align: center;
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: clamp(13px, 1.1vw, 15px);
+    .hero__tag {
+      margin-top: 10px;
+      font-size: clamp(14px, 1.25vw, 17px);
+      line-height: 1.6;
       color: var(--muted);
-      padding-top: 2px;
+      max-width: 22em;
     }
 
-    /* ========== P5 ========== */
-    .p5-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.9fr;
-      gap: clamp(20px, 3vw, 40px);
-      flex: 1;
-      min-height: 0;
-      margin-top: clamp(16px, 2.6vh, 24px);
-    }
-    .p5-imgs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      min-height: 0;
-    }
-    .p5-imgs .frame {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #090908;
-      min-height: 0;
-    }
-    .p5-imgs .frame img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-    }
-    .p5-list { display: flex; flex-direction: column; justify-content: center; gap: 0; }
-    .p5-row {
-      padding: 16px 0;
+    .hero__meta {
+      margin-top: clamp(36px, 6vh, 56px);
+      padding-top: 22px;
       border-top: 1px solid var(--line);
-      font-size: clamp(15px, 1.25vw, 18px);
-      color: var(--ink);
-      line-height: 1.45;
-    }
-    .p5-row:last-child { border-bottom: 1px solid var(--line); }
-    .p5-row span {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    /* ========== P6 ========== */
-    .p6-phones {
-      display: flex;
-      gap: clamp(8px, 1.2vw, 14px);
-      justify-content: center;
-      align-items: flex-end;
-      flex: 1;
-      min-height: 0;
-      padding: 8px 0 12px;
-    }
-    .phone {
-      flex: 1;
-      max-width: 150px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .phone__frame {
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid var(--line-strong);
-      overflow: hidden;
-      background: #000;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.4);
-    }
-    .phone__frame img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: min(46vh, 420px);
-      object-fit: cover;
-      object-position: top center;
-    }
-    .phone__cap {
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-    }
-    .p6-foot {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
+      gap: 10px 28px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+    }
+    .hero__meta strong {
+      color: var(--ink-2);
+      font-weight: 500;
     }
 
-    /* ========== P7 ========== */
-    .p7-grid {
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: clamp(28px, 4vw, 56px);
-      flex: 1;
-      min-height: 0;
-      margin-top: clamp(18px, 3vh, 28px);
-      align-items: start;
+    .hero__visual {
+      position: relative;
+      border-radius: 4px 20px 4px 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      aspect-ratio: 5 / 6;
+      max-height: min(68vh, 560px);
+      width: 100%;
+      max-width: 440px;
+      justify-self: end;
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(184, 69, 69, 0.08);
     }
-    .verify-step {
-      padding: 14px 0;
-      border-top: 1px solid var(--line);
+    .hero__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
     }
-    .verify-step:last-child { border-bottom: 1px solid var(--line); }
-    .verify-step h4 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ink);
-      margin-bottom: 4px;
+    .hero__visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        160deg,
+        transparent 40%,
+        rgba(18, 17, 15, 0.35) 100%
+      );
+      pointer-events: none;
     }
-    .verify-step p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    .metric {
-      display: grid;
-      grid-template-columns: minmax(160px, 0.75fr) 1fr;
-      gap: 16px;
-      align-items: baseline;
-      padding: clamp(16px, 2.8vh, 24px) 0;
-      border-top: 1px solid var(--line);
-    }
-    .metric:last-child { border-bottom: 1px solid var(--line); }
-    .metric__num {
-      font-size: clamp(28px, 3.4vw, 44px);
-      font-weight: 500;
-      letter-spacing: -0.03em;
-      color: var(--ink);
-      line-height: 1;
-    }
-    .metric__num .accent { color: var(--accent); }
-    .metric__label {
-      font-size: clamp(13px, 1.15vw, 16px);
-      color: var(--ink-2);
-      line-height: 1.4;
-    }
-    .metric__tag {
-      display: block;
+    .hero__badge {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 1;
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
+      color: var(--ink);
+      padding: 8px 12px;
+      background: rgba(18, 17, 15, 0.72);
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
     }
-    .metric__tag--test { color: var(--accent); }
-    .metric__tag--biz { color: #c4a574; }
 
-    /* ========== P8 ========== */
-    .p8 .slide__inner {
+    .scroll-cue {
+      grid-column: 1 / -1;
+      display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--faint);
     }
-    .p8-quote {
+    .scroll-cue::before {
+      content: "";
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--rose), transparent);
+    }
+
+    /* ---------- PROJECTS ---------- */
+    .work {
+      padding: clamp(64px, 10vh, 100px) var(--pad) clamp(80px, 12vh, 120px);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .work__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: clamp(36px, 6vh, 56px);
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .work__head h2 {
       font-family: var(--serif);
       font-style: italic;
       font-weight: 300;
-      font-size: clamp(28px, 3.6vw, 52px);
-      line-height: 1.3;
+      font-size: clamp(32px, 4vw, 48px);
       color: var(--ink);
-      max-width: 16em;
-      text-wrap: balance;
+      letter-spacing: -0.02em;
     }
-    .p8-pills {
-      margin-top: clamp(28px, 4.6vh, 44px);
+    .work__head p {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 22em;
+      line-height: 1.5;
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: 72px 1fr minmax(200px, 38%);
+      gap: clamp(16px, 2.5vw, 32px);
+      align-items: center;
+      padding: clamp(22px, 3.5vh, 32px) 0;
+      border-bottom: 1px solid var(--line);
+      transition: background 0.25s var(--ease);
+      border-radius: 0;
+    }
+    .project:first-of-type { border-top: 1px solid var(--line); }
+    .project:hover {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(184, 69, 69, 0.04) 30%,
+        rgba(184, 69, 69, 0.06)
+      );
+    }
+
+    .project__n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(22px, 2.2vw, 28px);
+      color: var(--rose);
+      line-height: 1;
+    }
+
+    .project__body { min-width: 0; }
+    .project__title {
+      font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      transition: color 0.2s var(--ease);
+    }
+    .project:hover .project__title { color: var(--rose); }
+
+    .project__tags {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .project__go {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+    .project__go span {
+      transition: transform 0.25s var(--ease);
+    }
+    .project:hover .project__go span {
+      transform: translateX(4px);
+    }
+
+    .project__thumb {
+      justify-self: end;
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 16 / 10;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .project__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .project:hover .project__thumb img {
+      transform: scale(1.04);
+    }
+
+    /* ---------- footer ---------- */
+    .foot {
+      padding: 28px var(--pad) 40px;
+      border-top: 1px solid var(--line);
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
+      gap: 12px 28px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+    }
+    .foot a {
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .foot a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--rose);
     }
 
-    @media print {
-      @page { size: A4 landscape; margin: 0; }
-      html, body { overflow: visible; height: auto; background: #0e0e0d; }
-      .page-num, .nav-zone, .notes { display: none !important; }
-      .deck { width: auto; height: auto; }
-      .slide {
-        position: relative;
-        display: flex !important;
-        animation: none !important;
-        width: 297mm;
-        height: 210mm;
-        page-break-after: always;
-        break-after: page;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        align-items: start;
+        padding-top: 88px;
       }
-      .slide:last-child { page-break-after: auto; }
+      .hero__visual {
+        order: -1;
+        max-width: none;
+        max-height: 42vh;
+        aspect-ratio: 16 / 10;
+        justify-self: stretch;
+        border-radius: 12px;
+      }
+      .project {
+        grid-template-columns: 48px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .project__thumb {
+        grid-column: 1 / -1;
+        max-width: none;
+        justify-self: stretch;
+        margin-top: 8px;
+      }
     }
 
-    @media (max-width: 960px) {
-      .p1 .slide__inner,
-      .p3-grid,
-      .p5-grid,
-      .p7-grid,
-      .trio { grid-template-columns: 1fr; }
-      .p1-phone { justify-self: start; width: 180px; }
-      .col--mobile .col-shots { grid-template-columns: repeat(3, 1fr); }
-      .unify-bar { grid-template-columns: 1fr; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .project__thumb img,
+      .project__go span { transition: none; }
     }
   </style>
 </head>
 <body>
-  <div class="deck">
-    <div class="page-num" id="pageNum"><b>01</b> / 08</div>
-    <div class="nav-zone nav-zone--prev" id="navPrev" aria-label="上一頁"></div>
-    <div class="nav-zone nav-zone--next" id="navNext" aria-label="下一頁"></div>
+  <header class="bar">
+    <span class="bar__mark"><em>RL</em> · Interview</span>
+    <a class="bar__link" href="https://www.rowanlin1229.com/" target="_blank" rel="noopener">Portfolio ↗</a>
+  </header>
 
-    <!-- P1 -->
-    <section class="slide p1 is-active" data-slide="1">
-      <div class="slide__inner">
-        <div>
-          <p class="eyebrow">Case · Cross-device UX</p>
-          <h1 class="brand">FainTV</h1>
-          <p class="p1-title">跨 TV · Mobile · Web 的訂閱體驗設計</p>
-          <div class="p1-tags">
-            <span class="pill pill--soft">台灣 OTT</span>
-            <span class="pill pill--soft">電視盒 + Mobile / Tablet / Web</span>
-          </div>
-          <div class="meta">
-            <p>1M+ 用戶｜家庭與年長觀眾｜訂閱制 + 商城</p>
-            <p class="role">My Role — UI/UX Designer</p>
-            <p>2 Designers · 1 PM · 3 Engineers</p>
-          </div>
-        </div>
-        <div class="p1-phone">
-          <img src="./assets/m-05.jpg" alt="Mobile 訂閱完成畫面" />
-        </div>
+  <section class="hero" aria-label="Introduction">
+    <div class="hero__copy">
+      <p class="hero__eyebrow">ASUS · Senior Web UX</p>
+      <h1 class="hero__name">Hi, I'm <em>Rowan</em>.</h1>
+      <p class="hero__full">Yu-Hsien (Rowan) Lin</p>
+      <p class="hero__role">Cross-screen UI/UX Designer</p>
+      <p class="hero__tag">Bridging platforms, connecting users. 跨裝置、研究與產品體驗。</p>
+      <div class="hero__meta">
+        <span><strong>TV</strong> · Mobile · Web</span>
+        <span><strong>Research</strong> · Systems</span>
+        <span>London / Taipei</span>
       </div>
-      <aside class="notes">
-        FainTV 是台灣影音串流，客廳電視盒為主，也有手機與網頁。訂閱加商城是營收核心。我負責跨三端 UX：同一套會員與訂閱體驗，在不同裝置上一致且各自好用。
-      </aside>
-    </section>
+    </div>
+    <div class="hero__visual">
+      <img src="./hub/covers/hero-rowan.png" alt="Rowan Lin" width="880" height="1056" />
+      <span class="hero__badge">Designer</span>
+    </div>
+    <p class="scroll-cue">Selected work</p>
+  </section>
 
-    <!-- P2 -->
-    <section class="slide" data-slide="2">
-      <div class="slide__inner">
-        <p class="eyebrow">Symptoms</p>
-        <h2 class="display">當時看到的問題</h2>
-        <div class="p2-list">
-          <div class="p2-item">訂閱流程流失嚴重</div>
-          <div class="p2-item">各裝置體驗不一致</div>
-          <div class="p2-item">TV 端任務完成率僅 <strong style="color:var(--accent);font-weight:500">30%</strong></div>
-        </div>
-        <p class="p2-context">脈絡：TV 主力用戶約 <strong>60 歲</strong></p>
+  <section class="work" id="projects" aria-labelledby="work-title">
+    <div class="work__head">
+      <h2 id="work-title">Selected work</h2>
+      <p>點選專案進入面試簡報或線上作品集。</p>
+    </div>
+
+    <a class="project" href="./faintv/index.html">
+      <span class="project__n">01</span>
+      <div class="project__body">
+        <h3 class="project__title">FainTV</h3>
+        <p class="project__tags">Cross-device · TV / Mobile / Web · 訂閱體驗</p>
+        <p class="project__go">Open presentation <span>→</span></p>
       </div>
-      <aside class="notes">
-        重設計前：訂閱走不完、各端體驗不一致、TV 完成率約三成。不一致不只是「長得不一樣」，而是任務與標準沒被統一。我們知道有問題，但還不能直接下解法。
-      </aside>
-    </section>
-
-    <!-- P3 -->
-    <section class="slide" data-slide="3">
-      <div class="slide__inner">
-        <p class="eyebrow">Process · Insight</p>
-        <div class="p3-grid">
-          <div>
-            <p class="how-label">How we knew</p>
-            <div class="how-step">
-              <h4>問卷</h4>
-              <p>確認問題方向</p>
-            </div>
-            <div class="how-step">
-              <h4>訪談</h4>
-              <p>理解長輩與代訂情境</p>
-            </div>
-            <p class="how-note">方案後再做易用性測試</p>
-          </div>
-          <div>
-            <h2 class="p3-quote">「訂閱的人，往往不是看電視的人」</h2>
-            <div class="insight">
-              <span class="n">1</span>
-              <p>遙控器輸入 email／卡號 ≈ <strong>做不到</strong></p>
-            </div>
-            <div class="insight">
-              <span class="n">2</span>
-              <p>很多長輩沒有 email → <strong>電話號碼登入</strong></p>
-            </div>
-            <div class="insight">
-              <span class="n">3</span>
-              <p>訂閱常由<strong>子女</strong>在手機／電腦代完成</p>
-            </div>
-            <div class="design-q">
-              <span>Design question</span>
-              如何用「一套跨裝置設計」，讓觀看與訂閱任務在對的人、對的裝置上完成？
-            </div>
-          </div>
-        </div>
+      <div class="project__thumb">
+        <img src="./hub/covers/faintv.jpg" alt="FainTV case cover" />
       </div>
-      <aside class="notes">
-        先問卷再訪談。洞察不是單修 TV 表單，而是角色與任務跨裝置錯位。需要統一的任務模型與帳號關係，不是三端各自為政。
-      </aside>
-    </section>
+    </a>
 
-    <!-- P4 hero -->
-    <section class="slide" data-slide="4">
-      <div class="slide__inner">
-        <p class="eyebrow">System</p>
-        <h2 class="headline">同一產品 · 三端設計</h2>
-        <p class="p4-sub">同一套帳號與任務模型，在 TV、Mobile、Web 用各自正確的方式表達</p>
-        <div class="trio">
-          <div class="col col--tv">
-            <div class="col-head">
-              <h3>TV</h3>
-              <span class="eq">= 看／驗證</span>
-            </div>
-            <div class="col-shots">
-              <div class="frame"><img src="./assets/tv-04-otp.jpg" alt="TV 認證碼輸入" /></div>
-              <div class="frame"><img src="./assets/tv-02-privacy-focus.jpg" alt="TV 隱私權焦點狀態" /></div>
-            </div>
-            <p class="cap">焦點 · 電話驗證｜操作者：<em>觀看者</em></p>
-          </div>
-          <div class="col col--mobile">
-            <div class="col-head">
-              <h3>Mobile</h3>
-              <span class="eq">= 訂</span>
-            </div>
-            <div class="col-shots">
-              <div class="frame"><img class="shot--cover" src="./assets/m-01.jpg" alt="會員資料" /></div>
-              <div class="frame"><img class="shot--cover" src="./assets/m-03.jpg" alt="信用卡" /></div>
-              <div class="frame"><img class="shot--cover" src="./assets/m-05.jpg" alt="訂閱完成" /></div>
-            </div>
-            <p class="cap">掃卡訂閱 · 完成後電視同步｜操作者：常為<em>子女</em></p>
-          </div>
-          <div class="col col--web">
-            <div class="col-head">
-              <h3>Web</h3>
-              <span class="eq">= 管</span>
-            </div>
-            <div class="col-shots">
-              <div class="frame"><img class="shot--cover" src="./assets/web-records.jpg" alt="Web 消費紀錄" /></div>
-            </div>
-            <p class="cap">消費紀錄 · 權益｜操作者：<em>本人或家人</em></p>
-          </div>
-        </div>
-        <div class="unify-bar">
-          <div class="unify-cell">
-            <div class="lbl lbl--u">統一</div>
-            <p>帳號關係 · 任務模型 · 視覺語言</p>
-          </div>
-          <div class="unify-cell">
-            <div class="lbl lbl--d">分化</div>
-            <p>輸入方式 · 資訊密度 · 操作者</p>
-          </div>
-          <p class="unify-line">不是三套產品，是同一套體驗的三種表達</p>
-        </div>
+    <a class="project" href="https://www.rowanlin1229.com/genebook.html" target="_blank" rel="noopener noreferrer">
+      <span class="project__n">02</span>
+      <div class="project__body">
+        <h3 class="project__title">Gene Health Tech</h3>
+        <p class="project__tags">Responsive Web · Branding</p>
+        <p class="project__go">Open portfolio <span>↗</span></p>
       </div>
-      <aside class="notes">
-        核心是跨裝置統一設計。三端同一會員與訂閱關係。統一：帳號、任務切分、產品語言。分化：輸入、密度、操作者。Mobile 完成後電視同步＝跨裝置狀態一致。不是 RWD，是任務模型 + 每端正確表達。
-      </aside>
-    </section>
-
-    <!-- P5 -->
-    <section class="slide" data-slide="5">
-      <div class="slide__inner">
-        <p class="eyebrow">TV · Deep dive</p>
-        <h2 class="headline">TV — 同一帳號在 10-foot 的表達</h2>
-        <div class="p5-grid">
-          <div class="p5-imgs">
-            <div class="frame"><img src="./assets/tv-01-member-error.jpg" alt="TV 加入會員錯誤狀態" /></div>
-            <div class="frame"><img src="./assets/tv-03-privacy.jpg" alt="TV 隱私權條款" /></div>
-            <div class="frame" style="grid-column:1/-1"><img src="./assets/tv-05-login-error.jpg" alt="TV 登入錯誤狀態" /></div>
-          </div>
-          <div class="p5-list">
-            <div class="p5-row"><span>Focus</span>單一焦點系統</div>
-            <div class="p5-row"><span>Identity</span>認證／登入（同一身分體系）</div>
-            <div class="p5-row"><span>States</span>錯誤與狀態設計</div>
-            <div class="p5-row"><span>A11y</span>WCAG 可感知／可操作</div>
-          </div>
-        </div>
+      <div class="project__thumb">
+        <img src="./hub/covers/gene.jpg" alt="Gene Health Tech cover" />
       </div>
-      <aside class="notes">
-        TV 不扛完整結帳，但登入驗證必須在同一帳號體系。焦點與可讀性是 TV 端標準；與 Mobile／Web 共享規則、入口不同。
-      </aside>
-    </section>
+    </a>
 
-    <!-- P6 -->
-    <section class="slide" data-slide="6">
-      <div class="slide__inner">
-        <p class="eyebrow">Mobile · Deep dive</p>
-        <h2 class="headline">Mobile — 訂閱主場 · 跨裝置閉環</h2>
-        <div class="p6-phones">
-          <figure class="phone">
-            <div class="phone__frame"><img src="./assets/m-01.jpg" alt="會員資料" /></div>
-            <figcaption class="phone__cap">會員</figcaption>
-          </figure>
-          <figure class="phone">
-            <div class="phone__frame"><img src="./assets/m-02.jpg" alt="付款方式" /></div>
-            <figcaption class="phone__cap">付款</figcaption>
-          </figure>
-          <figure class="phone">
-            <div class="phone__frame"><img src="./assets/m-03.jpg" alt="信用卡" /></div>
-            <figcaption class="phone__cap">掃卡</figcaption>
-          </figure>
-          <figure class="phone">
-            <div class="phone__frame"><img src="./assets/m-04.jpg" alt="確認訂單" /></div>
-            <figcaption class="phone__cap">確認</figcaption>
-          </figure>
-          <figure class="phone">
-            <div class="phone__frame"><img src="./assets/m-05.jpg" alt="訂閱完成" /></div>
-            <figcaption class="phone__cap">完成</figcaption>
-          </figure>
-        </div>
-        <div class="p6-foot">
-          <span class="pill pill--soft">掃卡 · 原生鍵盤</span>
-          <span class="pill pill--accent">完成頁：電視已同步啟用</span>
-        </div>
+    <a class="project" href="https://www.rowanlin1229.com/vcue.html" target="_blank" rel="noopener noreferrer">
+      <span class="project__n">03</span>
+      <div class="project__body">
+        <h3 class="project__title">Visual Cues Study</h3>
+        <p class="project__tags">UX Research · Mixed Methods</p>
+        <p class="project__go">Open portfolio <span>↗</span></p>
       </div>
-      <aside class="notes">
-        Mobile 承接高輸入交易；完成回寫 TV，三端同一訂閱結果。這是統一設計閉環。
-      </aside>
-    </section>
-
-    <!-- P7 -->
-    <section class="slide" data-slide="7">
-      <div class="slide__inner">
-        <p class="eyebrow">Validation · Results</p>
-        <h2 class="headline">驗證與結果</h2>
-        <div class="p7-grid">
-          <div>
-            <p class="how-label">驗證與迭代</p>
-            <div class="verify-step">
-              <h4>易用性測試</h4>
-              <p>能否完成、時間、卡點 → 修改</p>
-            </div>
-            <div class="verify-step">
-              <h4>迭代</h4>
-              <p>依測試發現調整跨裝置路徑</p>
-            </div>
-          </div>
-          <div>
-            <p class="how-label">結果（分層）</p>
-            <div class="metric">
-              <div class="metric__num"><span class="accent">30%</span> → 80%</div>
-              <div>
-                <span class="metric__tag metric__tag--test">體驗／測試</span>
-                <div class="metric__label">年長用戶任務完成率</div>
-              </div>
-            </div>
-            <div class="metric">
-              <div class="metric__num">20 → 5 分</div>
-              <div>
-                <span class="metric__tag metric__tag--test">易用性測試</span>
-                <div class="metric__label">任務計時（非全站 analytics）</div>
-              </div>
-            </div>
-            <div class="metric">
-              <div class="metric__num"><span class="accent">+45%</span></div>
-              <div>
-                <span class="metric__tag metric__tag--biz">業務結果</span>
-                <div class="metric__label">營收成長（與測試分開）</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="project__thumb">
+        <img src="./hub/covers/vcue.jpg" alt="Visual Cues Study cover" />
       </div>
-      <aside class="notes">
-        方案後用易用性測試驗證跨裝置路徑，再迭代。完成率與時間來自測試；營收是業務結果。被問歸因時承認還有其他因素，我負責體驗與完成路徑。
-      </aside>
-    </section>
+    </a>
+  </section>
 
-    <!-- P8 -->
-    <section class="slide p8" data-slide="8">
-      <div class="slide__inner">
-        <p class="p8-quote">跨裝置一致的，是心智模型與設計標準，不是介面。</p>
-        <div class="p8-pills">
-          <span class="pill">TV 看／驗證</span>
-          <span class="pill pill--soft">Mobile 訂</span>
-          <span class="pill">Web 管</span>
-          <span class="pill pill--accent">操作者甚至不是同一個人</span>
-        </div>
-      </div>
-      <aside class="notes">
-        一致性定在任務、角色與標準，不是像素。看多裝置、多角色產品（含官網 B2C／B2B）也是：同一套設計邏輯的正確表達，不是同一個版面複製。
-      </aside>
-    </section>
-  </div>
-
-  <script>
-    (function () {
-      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-      var total = slides.length;
-      var current = 0;
-      var notesOn = false;
-      var pageNum = document.getElementById("pageNum");
-
-      function pad(n) { return n < 10 ? "0" + n : String(n); }
-
-      function syncNotes() {
-        slides.forEach(function (s, idx) {
-          var n = s.querySelector(".notes");
-          if (!n) return;
-          if (notesOn && idx === current) n.classList.add("is-visible");
-          else n.classList.remove("is-visible");
-        });
-      }
-
-      function show(i) {
-        if (i < 0 || i >= total) return;
-        slides[current].classList.remove("is-active");
-        current = i;
-        slides[current].classList.add("is-active");
-        pageNum.innerHTML = "<b>" + pad(current + 1) + "</b> / " + pad(total);
-        syncNotes();
-      }
-
-      function next() { show(current + 1); }
-      function prev() { show(current - 1); }
-
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
-          e.preventDefault(); next();
-        } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
-          e.preventDefault(); prev();
-        } else if (e.key === "n" || e.key === "N") {
-          e.preventDefault(); notesOn = !notesOn; syncNotes();
-        } else if (e.key === "Home") {
-          e.preventDefault(); show(0);
-        } else if (e.key === "End") {
-          e.preventDefault(); show(total - 1);
-        }
-      });
-
-      document.getElementById("navNext").addEventListener("click", next);
-      document.getElementById("navPrev").addEventListener("click", prev);
-
-      var touchX = null;
-      document.addEventListener("touchstart", function (e) {
-        touchX = e.changedTouches[0].screenX;
-      }, { passive: true });
-      document.addEventListener("touchend", function (e) {
-        if (touchX === null) return;
-        var dx = e.changedTouches[0].screenX - touchX;
-        if (Math.abs(dx) > 50) { if (dx < 0) next(); else prev(); }
-        touchX = null;
-      }, { passive: true });
-
-      show(0);
-    })();
-  </script>
+  <footer class="foot">
+    <span>Yu-Hsien (Rowan) Lin</span>
+    <span>
+      <a href="https://www.rowanlin1229.com/" target="_blank" rel="noopener">rowanlin1229.com</a>
+      ·
+      <a href="./faintv/index.html">FainTV deck</a>
+    </span>
+  </footer>
 </body>
 </html>

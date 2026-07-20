@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FainTV — 問卷題目</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #12110f;
+      --ink: #f3f1ec;
+      --ink-2: #d8d4cb;
+      --muted: #8c877c;
+      --line: rgba(243, 241, 236, 0.09);
+      --rose: #B84545;
+      --serif: "Cormorant Garamond", Georgia, "Songti TC", serif;
+      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: var(--sans);
+      font-weight: 400;
+      background: var(--bg);
+      color: var(--ink-2);
+      -webkit-font-smoothing: antialiased;
+      padding: clamp(32px, 6vh, 64px) clamp(24px, 5vw, 72px) 80px;
+    }
+    .wrap { max-width: 820px; margin: 0 auto; }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 28px;
+      border-bottom: 1px solid transparent;
+    }
+    .back:hover { color: var(--ink); border-bottom-color: var(--line); }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(32px, 4.5vw, 48px);
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .lede {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 40em;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
+    }
+    ol {
+      list-style: none;
+      counter-reset: q;
+    }
+    li {
+      counter-increment: q;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: clamp(15px, 1.2vw, 17px);
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+    li::before {
+      content: counter(q);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--rose);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html#process">← 回到簡報</a>
+    <p class="eyebrow">Empathize · Survey</p>
+    <h1>參與者問卷題目</h1>
+    <p class="lede">當時為研究整理的系列問題，用來理解用戶為何選擇電視觀看、以及使用上的障礙。</p>
+    <div class="meta">
+      <span>FainTV</span>
+      <span>Design process · 問卷</span>
+    </div>
+    <ol>
+      <li>相較於手機，你是否更偏好在電視螢幕上觀看內容，以獲得更沉浸的觀看體驗？</li>
+      <li>電視的大尺寸螢幕，是否是你偏好在電視上觀看內容的關鍵因素？</li>
+      <li>你是否覺得在電視上觀看，能提升高畫質或 4K 內容的欣賞體驗？</li>
+      <li>與家人或朋友一起觀看的共享體驗，是否是你選擇電視而非手機的原因之一？</li>
+      <li>相較於手機，電視上豐富的內容與頻道選擇是否對你更有吸引力？</li>
+      <li>使用遙控器操作與瀏覽內容的便利性，是否影響你選擇在電視上觀看？</li>
+      <li>相較於滑手機，你是否更重視在沙發或床上、與螢幕保持距離觀看大畫面的舒適感？</li>
+      <li>在電視上固定收看特定節目或頻道的習慣，是否影響你的選擇？</li>
+      <li>相較於手機，你是否更欣賞電視較佳音質所帶來的觀看體驗？</li>
+      <li>你是否為了減少長時間滑手機造成的眼睛疲勞，而選擇在電視上觀看？</li>
+      <li>選擇串流平台時，價格與品牌何者對你更重要？</li>
+      <li>觀看電視時，你是否曾遇到使用上的障礙？</li>
+      <li>你是否認為電視在現代人生活中仍扮演重要角色？</li>
+    </ol>
+  </div>
+</body>
+</html>

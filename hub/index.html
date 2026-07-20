@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rowan Lin — Interview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Portfolio-aligned hub: editorial dark folio, dusty rose ≤10%
+       Design north star: Cross-Platform Architect — restraint, craft, hierarchy */
+    :root {
+      --bg: #12110f;
+      --bg-2: #1a1916;
+      --ink: #f3f1ec;
+      --ink-2: #d8d4cb;
+      --muted: #8c877c;
+      --faint: #5c5850;
+      --line: rgba(243, 241, 236, 0.09);
+      --line-2: rgba(243, 241, 236, 0.16);
+      --rose: #B84545;
+      --rose-soft: rgba(184, 69, 69, 0.14);
+      --serif: "Cormorant Garamond", Georgia, "Songti TC", "Noto Serif TC", serif;
+      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --pad: clamp(28px, 5.5vw, 80px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      font-weight: 400;
+      background:
+        radial-gradient(ellipse 70% 45% at 100% 0%, rgba(184, 69, 69, 0.07), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 0% 80%, rgba(184, 69, 69, 0.04), transparent 50%),
+        var(--bg);
+      color: var(--ink-2);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      min-height: 100vh;
+      cursor: none;
+    }
+    body.is-intro {
+      overflow: hidden;
+    }
+
+    /* ---------- Intro (drawing cursor stage → then hero) ---------- */
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      transition: opacity 0.9s var(--ease), visibility 0.9s;
+    }
+    .intro.is-done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    /* Multilingual hello cycle — Q彈 from bottom */
+    .intro__hello {
+      position: relative;
+      min-height: clamp(56px, 10vw, 88px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(92vw, 720px);
+      overflow: visible;
+    }
+    .intro__hello-word {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate3d(-50%, calc(-50% + 48px), 0) scale(0.9);
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 5vw, 52px);
+      color: var(--ink);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+    .intro__hello-word.is-in {
+      /* multi-step keyframes control bounce; keep easing neutral */
+      animation: helloIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .intro__hello-word.is-out {
+      animation: helloOut 0.24s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+    }
+    /* 從下往上彈入：先過衝再回落 */
+    @keyframes helloIn {
+      0% {
+        opacity: 0;
+        transform: translate3d(-50%, calc(-50% + 48px), 0) scale(0.88);
+      }
+      55% {
+        opacity: 1;
+        transform: translate3d(-50%, calc(-50% - 12px), 0) scale(1.06);
+      }
+      76% {
+        transform: translate3d(-50%, calc(-50% + 5px), 0) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(1);
+      }
+    }
+    @keyframes helloOut {
+      0% {
+        opacity: 1;
+        transform: translate3d(-50%, -50%, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(-50%, calc(-50% - 32px), 0) scale(0.94);
+      }
+    }
+
+    .site {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .site.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro { transition: opacity 0.2s; }
+      .intro__hello-word { animation: none !important; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      .site { transition: none; }
+    }
+
+    a, button, .project { cursor: none; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; pointer-events: none; }
+
+    /* Skiper59-inspired drawing cursor (canvas trail) */
+    #draw-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9990;
+    }
+    #cur-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rose);
+      box-shadow: 0 0 12px rgba(184, 69, 69, 0.55);
+      pointer-events: none;
+      z-index: 10000;
+      will-change: transform;
+      mix-blend-mode: screen;
+    }
+    #cur-dot.is-hover {
+      width: 14px;
+      height: 14px;
+      background: transparent;
+      border: 1.5px solid var(--rose);
+      box-shadow: 0 0 0 4px rgba(184, 69, 69, 0.12);
+    }
+    #cur-dot.is-hidden { opacity: 0; }
+
+    @media (hover: none), (pointer: coarse) {
+      body, a, button, .project { cursor: auto; }
+      #draw-canvas, #cur-dot { display: none !important; }
+    }
+
+    /* ---------- top bar ---------- */
+    .bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px var(--pad);
+      background: linear-gradient(to bottom, rgba(18,17,15,0.92), transparent);
+      pointer-events: none;
+    }
+    .bar a, .bar span { pointer-events: auto; }
+    .bar__mark {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .bar__mark em {
+      font-style: normal;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .bar__link {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+    .bar__link:hover {
+      color: var(--ink);
+      border-bottom-color: var(--rose);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: end;
+      padding: clamp(100px, 14vh, 140px) var(--pad) clamp(48px, 8vh, 80px);
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 22px;
+    }
+    .hero__eyebrow::after {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: var(--rose);
+      opacity: 0.7;
+    }
+
+    .hero__name {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(52px, 8.5vw, 104px);
+      line-height: 0.94;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .hero__name em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .hero__full {
+      margin-top: 14px;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .hero__role {
+      margin-top: 28px;
+      font-size: clamp(17px, 1.6vw, 21px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .hero__tag {
+      margin-top: 10px;
+      font-size: clamp(14px, 1.25vw, 17px);
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 22em;
+    }
+
+    .hero__meta {
+      margin-top: clamp(36px, 6vh, 56px);
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 28px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+    }
+    .hero__meta strong {
+      color: var(--ink-2);
+      font-weight: 500;
+    }
+
+    .hero__visual {
+      position: relative;
+      border-radius: 4px 20px 4px 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      aspect-ratio: 5 / 6;
+      max-height: min(68vh, 560px);
+      width: 100%;
+      max-width: 440px;
+      justify-self: end;
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(184, 69, 69, 0.08);
+    }
+    .hero__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+    }
+    .hero__visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        160deg,
+        transparent 40%,
+        rgba(18, 17, 15, 0.35) 100%
+      );
+      pointer-events: none;
+    }
+    .hero__badge {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 1;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 8px 12px;
+      background: rgba(18, 17, 15, 0.72);
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* ---------- PROJECTS ---------- */
+    .work {
+      padding: clamp(64px, 10vh, 100px) var(--pad) clamp(80px, 12vh, 120px);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .work__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: clamp(28px, 5vh, 40px);
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .work__head h2 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(32px, 4vw, 48px);
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .work__head p {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 22em;
+      line-height: 1.5;
+    }
+
+    /* Skiper94-inspired page scroll progress — unified left rail */
+    .scroll-progress {
+      position: fixed;
+      left: clamp(12px, 2.2vw, 24px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .scroll-progress__track {
+      position: relative;
+      width: 2px;
+      height: min(42vh, 280px);
+      background: rgba(243, 241, 236, 0.1);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .scroll-progress__fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 0%;
+      background: var(--rose);
+      border-radius: 99px;
+      will-change: height;
+    }
+    .scroll-progress__pct {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--rose);
+      letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+      /* clip-path reveal of number block */
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.35s var(--ease);
+    }
+    .scroll-progress__pct.is-on {
+      clip-path: inset(0 0 0 0);
+    }
+
+    /* Project blocks — taller for per-project process */
+    .project-block {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(22px, 4vh, 36px) 0;
+      border-top: 1px solid var(--line);
+    }
+    .project-block:last-of-type {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: 72px 1fr minmax(200px, 36%);
+      gap: clamp(16px, 2.5vw, 32px);
+      align-items: center;
+      transition: background 0.25s var(--ease);
+      border-radius: 12px;
+      padding: 8px 8px 8px 0;
+    }
+    .project:hover {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(184, 69, 69, 0.04) 30%,
+        rgba(184, 69, 69, 0.06)
+      );
+    }
+
+    .project__n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(22px, 2.2vw, 28px);
+      color: var(--rose);
+      line-height: 1;
+    }
+
+    .project__body { min-width: 0; }
+    .project__title {
+      font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      transition: color 0.2s var(--ease);
+    }
+    .project:hover .project__title { color: var(--rose); }
+
+    .project__tags {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .project__go {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+    .project__go span {
+      transition: transform 0.25s var(--ease);
+    }
+    .project:hover .project__go span {
+      transform: translateX(4px);
+    }
+
+    .project__thumb {
+      justify-self: end;
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 16 / 10;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .project__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .project:hover .project__thumb img {
+      transform: scale(1.04);
+    }
+
+    /* ---------- footer ---------- */
+    .foot {
+      padding: 28px var(--pad) 40px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 28px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+    }
+    .foot a {
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .foot a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--rose);
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        align-items: start;
+        padding-top: 88px;
+      }
+      .hero__visual {
+        order: -1;
+        max-width: none;
+        max-height: 42vh;
+        aspect-ratio: 16 / 10;
+        justify-self: stretch;
+        border-radius: 12px;
+      }
+      .scroll-progress { left: 8px; }
+      .scroll-progress__track { height: min(28vh, 160px); }
+      .project-block { min-height: auto; padding: 28px 0; }
+      .project {
+        grid-template-columns: 48px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .project__thumb {
+        grid-column: 1 / -1;
+        max-width: none;
+        justify-self: stretch;
+        margin-top: 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .project__thumb img,
+      .project__go span { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="draw-canvas" aria-hidden="true"></canvas>
+  <div id="cur-dot" aria-hidden="true"></div>
+
+  <!-- Intro: multilingual hello → then hub hero -->
+  <div class="intro" id="intro" role="dialog" aria-label="Introduction">
+    <div class="intro__hello" id="introHello" aria-live="polite">
+      <span class="intro__hello-word" data-hello>Hello</span>
+    </div>
+  </div>
+
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true" hidden>
+    <div class="scroll-progress__track">
+      <div class="scroll-progress__fill" id="scrollProgressFill"></div>
+    </div>
+    <span class="scroll-progress__pct is-on" id="scrollProgressPct">0%</span>
+  </div>
+
+  <div class="site" id="site">
+  <header class="bar">
+    <span class="bar__mark"><em>RL</em> · Interview</span>
+    <a class="bar__link" href="https://www.rowanlin1229.com/" target="_blank" rel="noopener">Portfolio ↗</a>
+  </header>
+
+  <section class="hero" aria-label="Introduction">
+    <div class="hero__copy">
+      <p class="hero__eyebrow">ASUS · Senior Web UX</p>
+      <h1 class="hero__name">Hi, I'm <em>Rowan</em>.</h1>
+      <p class="hero__full">Yu-Hsien (Rowan) Lin</p>
+      <p class="hero__role">Cross-screen UI/UX Designer</p>
+      <p class="hero__tag">Bridging platforms, connecting users. 跨裝置、研究與產品體驗。</p>
+      <div class="hero__meta">
+        <span><strong>TV</strong> · Mobile · Web</span>
+        <span><strong>Research</strong> · Systems</span>
+        <span>London / Taipei</span>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <img src="./covers/hero-rowan.png" alt="Rowan Lin" width="880" height="1056" />
+      <span class="hero__badge">Designer</span>
+    </div>
+  </section>
+
+  <section class="work" id="projects" aria-labelledby="work-title">
+    <div class="work__head">
+      <h2 id="work-title">Selected work</h2>
+    </div>
+
+    <article class="project-block">
+      <a class="project" href="../faintv/index.html">
+        <span class="project__n">01</span>
+        <div class="project__body">
+          <h3 class="project__title">FainTV</h3>
+          <p class="project__tags">Cross-device · TV / Mobile / Web · 訂閱體驗</p>
+          <p class="project__go">Open presentation <span>→</span></p>
+        </div>
+        <div class="project__thumb">
+          <img src="./covers/faintv.jpg" alt="FainTV case cover" />
+        </div>
+      </a>
+    </article>
+
+    <article class="project-block">
+      <a class="project" href="https://www.rowanlin1229.com/genebook.html" target="_blank" rel="noopener noreferrer">
+        <span class="project__n">02</span>
+        <div class="project__body">
+          <h3 class="project__title">Gene Health Tech</h3>
+          <p class="project__tags">Responsive Web · Branding</p>
+          <p class="project__go">Open portfolio <span>↗</span></p>
+        </div>
+        <div class="project__thumb">
+          <img src="./covers/gene.jpg" alt="Gene Health Tech cover" />
+        </div>
+      </a>
+    </article>
+
+    <article class="project-block">
+      <a class="project" href="https://www.rowanlin1229.com/vcue.html" target="_blank" rel="noopener noreferrer">
+        <span class="project__n">03</span>
+        <div class="project__body">
+          <h3 class="project__title">Visual Cues Study</h3>
+          <p class="project__tags">UX Research · Mixed Methods</p>
+          <p class="project__go">Open portfolio <span>↗</span></p>
+        </div>
+        <div class="project__thumb">
+          <img src="./covers/vcue.jpg" alt="Visual Cues Study cover" />
+        </div>
+      </a>
+    </article>
+  </section>
+
+  <footer class="foot">
+    <span>Yu-Hsien (Rowan) Lin</span>
+    <span>
+      <a href="https://www.rowanlin1229.com/" target="_blank" rel="noopener">rowanlin1229.com</a>
+      ·
+      <a href="../faintv/index.html">FainTV deck</a>
+      · Effects inspired by
+      <a href="https://skiper-ui.com/v1/skiper59" target="_blank" rel="noopener">Skiper 59</a>
+      ·
+      <a href="https://skiper-ui.com/v1/skiper94" target="_blank" rel="noopener">94</a>
+    </span>
+  </footer>
+  </div><!-- /.site -->
+
+  <script>
+    /* Intro: multilingual Hello cycle → hub hero
+       (drawing cursor stays active throughout) */
+    (function () {
+      var intro = document.getElementById('intro');
+      var site = document.getElementById('site');
+      var progress = document.getElementById('scrollProgress');
+      var helloRoot = document.getElementById('introHello');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var done = false;
+
+      var hellos = [
+        'Hello',
+        '你好',
+        'こんにちは',
+        '안녕하세요',
+        'Bonjour',
+        'Hola',
+        'Ciao',
+        'Hallo',
+        'Olá',
+        'नमस्ते',
+        'สวัสดี',
+        'Xin chào',
+        'مرحبا',
+        'Привет'
+      ];
+
+      document.body.classList.add('is-intro');
+
+      function enterSite() {
+        if (done) return;
+        done = true;
+        intro.classList.add('is-done');
+        site.classList.add('is-visible');
+        document.body.classList.remove('is-intro');
+        if (progress) progress.hidden = false;
+      }
+
+      function showWord(text) {
+        var el = document.createElement('span');
+        el.className = 'intro__hello-word';
+        el.setAttribute('data-hello', '');
+        el.textContent = text;
+        helloRoot.innerHTML = '';
+        helloRoot.appendChild(el);
+        void el.offsetWidth;
+        el.classList.add('is-in');
+        return el;
+      }
+
+      if (reduce) {
+        showWord(hellos[0]);
+        setTimeout(enterSite, 400);
+        return;
+      }
+
+      var i = 0;
+      /* hold long enough for helloIn (0.5s) bounce to finish */
+      var interval = 560;
+      var el = showWord(hellos[0]);
+
+      function nextHello() {
+        if (done) return;
+        i += 1;
+        if (i >= hellos.length) {
+          // fade last word out, then enter hero — no red final Hello
+          el.classList.remove('is-in');
+          el.classList.add('is-out');
+          setTimeout(enterSite, 280);
+          return;
+        }
+        /* middle words slightly snappier, still > bounce duration */
+        if (i > 2 && i < hellos.length - 1) interval = 480;
+        else interval = 560;
+
+        el.classList.remove('is-in');
+        el.classList.add('is-out');
+        var prev = el;
+        setTimeout(function () {
+          if (prev.parentNode) prev.parentNode.removeChild(prev);
+        }, 260);
+
+        el = showWord(hellos[i]);
+        setTimeout(nextHello, interval);
+      }
+
+      setTimeout(nextHello, 600);
+
+      function early() {
+        if (done) return;
+        enterSite();
+      }
+      intro.addEventListener('click', early);
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+          e.preventDefault();
+          early();
+        }
+      });
+      window.addEventListener('wheel', early, { passive: true, once: true });
+      window.addEventListener('touchstart', early, { passive: true, once: true });
+    })();
+
+    /* Drawing cursor — inspired by Skiper 59 */
+    (function () {
+      var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!fine || reduce) {
+        document.body.style.cursor = 'auto';
+        return;
+      }
+
+      var canvas = document.getElementById('draw-canvas');
+      var ctx = canvas.getContext('2d');
+      var dot = document.getElementById('cur-dot');
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var points = [];
+      var maxAge = 650;
+      var lastX = null;
+      var lastY = null;
+      var strokeColor = '#B84545';
+      var strokeWidth = 2.25;
+
+      function resize() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      document.addEventListener('mousemove', function (e) {
+        var x = e.clientX;
+        var y = e.clientY;
+        var now = performance.now();
+        if (lastX !== null) {
+          points.push({ x0: lastX, y0: lastY, x1: x, y1: y, t: now });
+        }
+        lastX = x;
+        lastY = y;
+        var hover = e.target.closest && e.target.closest('a, button, .project');
+        if (hover) {
+          dot.classList.add('is-hover');
+          dot.style.transform = 'translate(' + (x - 7) + 'px,' + (y - 7) + 'px)';
+        } else {
+          dot.classList.remove('is-hover');
+          dot.style.transform = 'translate(' + (x - 4) + 'px,' + (y - 4) + 'px)';
+        }
+        dot.classList.remove('is-hidden');
+      });
+
+      document.addEventListener('mouseleave', function () {
+        lastX = lastY = null;
+        dot.classList.add('is-hidden');
+      });
+      document.addEventListener('mouseenter', function () {
+        dot.classList.remove('is-hidden');
+      });
+
+      var maxPoints = 180;
+
+      function frame(now) {
+        while (points.length && now - points[0].t > maxAge) points.shift();
+        if (points.length > maxPoints) points.splice(0, points.length - maxPoints);
+
+        ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        for (var i = 0; i < points.length; i++) {
+          var p = points[i];
+          var age = now - p.t;
+          var life = 1 - age / maxAge;
+          if (life <= 0) continue;
+          ctx.beginPath();
+          ctx.moveTo(p.x0, p.y0);
+          ctx.lineTo(p.x1, p.y1);
+          ctx.strokeStyle = strokeColor;
+          ctx.globalAlpha = life * life * 0.85;
+          ctx.lineWidth = strokeWidth * (0.55 + life * 0.55);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
+    /* Scroll progress — inspired by Skiper 94 · left rail only */
+    (function () {
+      var fill = document.getElementById('scrollProgressFill');
+      var pctEl = document.getElementById('scrollProgressPct');
+      if (!fill || !pctEl) return;
+
+      function clamp(v, a, b) {
+        return Math.max(a, Math.min(b, v));
+      }
+
+      function pageProgress() {
+        var doc = document.documentElement;
+        var scrollTop = window.scrollY || doc.scrollTop;
+        var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+        return clamp(scrollTop / max, 0, 1);
+      }
+
+      function update() {
+        var p = pageProgress();
+        var percent = Math.round(p * 100);
+        fill.style.height = percent + '%';
+        pctEl.textContent = percent + '%';
+        if (percent > 0) pctEl.classList.add('is-on');
+      }
+
+      var ticking = false;
+      window.addEventListener(
+        'scroll',
+        function () {
+          if (!ticking) {
+            requestAnimationFrame(function () {
+              update();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+</body>
+</html>

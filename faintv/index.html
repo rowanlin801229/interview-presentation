@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FainTV — Interview Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       Scene: conference-room projection for ASUS UX interview.
+       Editorial case-study folio — portfolio-aligned, not SaaS cards.
+       Accent ≤10% dusty rose. One thesis per 100vh scroll section.
+       ============================================================ */
+    :root {
+      --bg: #12110f;
+      --bg-2: #1a1916;
+      --bg-3: #22211d;
+      --ink: #f3f1ec;
+      --ink-2: #d8d4cb;
+      --muted: #8c877c;
+      --faint: #5c5850;
+      --line: rgba(243, 241, 236, 0.09);
+      --line-2: rgba(243, 241, 236, 0.16);
+      --rose: #B84545;
+      --rose-soft: rgba(184, 69, 69, 0.14);
+      --rose-glow: rgba(184, 69, 69, 0.22);
+      --ph: #2a2925;
+      --ph-line: rgba(243, 241, 236, 0.14);
+      --serif: "Cormorant Garamond", Georgia, "Songti TC", "Noto Serif TC", serif;
+      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --pad-x: clamp(28px, 5.5vw, 88px);
+      --pad-y: clamp(36px, 6.5vh, 72px);
+      --max: 1240px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      height: 100%;
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100%;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(184, 69, 69, 0.06), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(184, 69, 69, 0.04), transparent 45%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; scroll-snap-type: y proximity; }
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* ---------- chrome ---------- */
+    .progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      z-index: 100;
+      background: rgba(243, 241, 236, 0.06);
+    }
+    .progress__fill {
+      height: 100%;
+      width: 12.5%;
+      background: var(--rose);
+      transition: width 0.35s var(--ease);
+    }
+
+    .page-num {
+      position: fixed;
+      right: var(--pad-x);
+      bottom: 20px;
+      z-index: 100;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--faint);
+      pointer-events: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .page-num b { color: var(--ink-2); font-weight: 500; }
+
+    /* ---------- section shell ---------- */
+    .slide {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-height: 100vh;
+      max-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: var(--pad-y) var(--pad-x);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+    }
+
+    .slide::before {
+      content: attr(data-index);
+      position: absolute;
+      right: var(--pad-x);
+      top: var(--pad-y);
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 1;
+      color: rgba(243, 241, 236, 0.035);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .slide__inner {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- type ---------- */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: clamp(12px, 2vh, 20px);
+    }
+    .eyebrow::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--rose);
+      opacity: 0.7;
+    }
+
+    .brand {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(56px, 9vw, 112px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .display {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(34px, 4.6vw, 64px);
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    .headline {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: clamp(24px, 2.6vw, 36px);
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+
+    .lede {
+      font-size: clamp(15px, 1.25vw, 18px);
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 36em;
+    }
+
+    .accent { color: var(--rose); font-weight: 500; }
+
+    /* ---------- media frames ---------- */
+    .frame {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    /* Gray placeholder for missing assets */
+    .ph {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+      min-height: 120px;
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 8px,
+          rgba(255,255,255,0.015) 8px,
+          rgba(255,255,255,0.015) 16px
+        ),
+        var(--ph);
+      border: 1px dashed var(--ph-line);
+      border-radius: 14px;
+      color: var(--faint);
+      text-align: center;
+      padding: 16px;
+    }
+    .ph__label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .ph__file {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-2);
+      letter-spacing: 0.02em;
+    }
+    .ph__hint {
+      font-size: 12px;
+      color: var(--faint);
+      max-width: 18em;
+      line-height: 1.4;
+    }
+
+    .cap {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .cap em {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-2);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line-2);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink-2);
+      background: rgba(255,255,255,0.02);
+    }
+    .chip--rose {
+      border-color: rgba(184, 69, 69, 0.4);
+      background: var(--rose-soft);
+      color: #e8b8b8;
+    }
+
+    .notes {
+      display: none;
+      position: fixed;
+      left: var(--pad-x);
+      right: 100px;
+      bottom: 52px;
+      z-index: 120;
+      max-height: 28vh;
+      overflow: auto;
+      padding: 16px 18px;
+      background: rgba(18, 17, 15, 0.94);
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--ink-2);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45);
+    }
+    .notes.is-visible { display: block; }
+    .notes::before {
+      content: "SPEAKER · N";
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+
+    /* ========== P1 Cover ========== */
+    .p1 .slide__inner {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: center;
+    }
+    .p1-kicker { margin-bottom: 8px; }
+    .p1-title {
+      margin-top: 18px;
+      font-size: clamp(18px, 1.8vw, 24px);
+      font-weight: 400;
+      color: var(--ink-2);
+      line-height: 1.4;
+      max-width: 16em;
+    }
+    .p1-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .p1-meta {
+      margin-top: clamp(28px, 5vh, 48px);
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .p1-meta strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .p1-stage {
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .p1-stage .frame--hero {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      line-height: 0;
+      background: #0a0a09;
+      box-shadow: 0 28px 56px rgba(0,0,0,0.4);
+    }
+    .p1-stage .frame--hero img {
+      width: 100%;
+      height: auto;
+      max-height: min(62vh, 520px);
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+
+    /* ========== P2 Symptoms ========== */
+    .p2 .slide__inner { justify-content: center; max-width: 900px; }
+    .p2-list {
+      margin-top: clamp(36px, 6vh, 56px);
+      display: flex;
+      flex-direction: column;
+    }
+    .p2-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 20px;
+      align-items: baseline;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+      font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+    .p2-item:last-of-type { border-bottom: 1px solid var(--line); }
+    .p2-item .idx {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--rose);
+    }
+    .p2-item__main {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      min-width: 0;
+      width: 100%;
+    }
+    .p2-item__label { min-width: 0; }
+    .p2-item .accent {
+      flex-shrink: 0;
+      margin-left: auto;
+      white-space: nowrap;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--rose);
+    }
+    .p2-context {
+      margin-top: clamp(28px, 5vh, 40px);
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 24px;
+      padding: 14px 18px 14px 22px;
+      background: var(--rose-soft);
+      border: 1px solid rgba(184, 69, 69, 0.28);
+      border-radius: 12px;
+      font-size: clamp(16px, 1.5vw, 20px);
+      color: var(--ink);
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .p2-context__text {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .p2-context__text span {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rose);
+      white-space: nowrap;
+    }
+    .avatars {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      margin-left: auto;
+      padding-left: 16px;
+      border-left: 1px solid rgba(184, 69, 69, 0.25);
+    }
+    .avatars img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      border: 2px solid rgba(18, 17, 15, 0.55);
+      box-shadow: 0 0 0 1px rgba(184, 69, 69, 0.3);
+      background: var(--bg-2);
+    }
+    .avatars img + img {
+      margin-left: -10px;
+    }
+
+    /* ========== Process (own section) ========== */
+    .process .slide__inner {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(28px, 4vw, 56px);
+      align-items: center;
+    }
+    .process-steps {
+      display: flex;
+      flex-direction: column;
+      margin-top: clamp(20px, 3vh, 32px);
+    }
+    .process-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .process-step:last-child { border-bottom: 1px solid var(--line); }
+    .process-step .n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(28px, 3vw, 36px);
+      line-height: 1;
+      color: var(--rose);
+    }
+    .process-step h3 {
+      font-size: clamp(18px, 1.8vw, 24px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .process-link {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(184, 69, 69, 0.45);
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .process-link:hover {
+      color: var(--rose);
+      border-bottom-color: var(--rose);
+    }
+    .process-link:focus-visible {
+      outline: 2px solid var(--rose);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+    .process-link__hint {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--rose);
+      margin-left: 8px;
+      border: 0;
+      font-family: var(--sans);
+      font-style: normal;
+    }
+    .process-step p {
+      font-size: clamp(14px, 1.15vw, 16px);
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 28em;
+    }
+    .process-media {
+      min-height: 0;
+      height: min(52vh, 420px);
+    }
+    .process-media .ph,
+    .process-media .frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+    }
+    .process-media .ph { min-height: 100%; }
+
+    /* ========== Insights (own section) ========== */
+    .insight-page .slide__inner {
+      justify-content: center;
+      max-width: 920px;
+    }
+    .insight-quote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.22;
+      color: var(--ink);
+      letter-spacing: -0.025em;
+      margin-bottom: clamp(28px, 4vh, 40px);
+      text-wrap: balance;
+    }
+    .insight {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+      align-items: start;
+    }
+    .insight:last-of-type { border-bottom: 1px solid var(--line); }
+    .insight .n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      color: var(--rose);
+      line-height: 1.2;
+    }
+    .insight p {
+      font-size: clamp(15px, 1.25vw, 18px);
+      line-height: 1.55;
+      color: var(--ink-2);
+      max-width: 42em;
+    }
+    .insight strong { color: var(--ink); font-weight: 500; }
+    .design-q {
+      margin-top: clamp(24px, 4vh, 36px);
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      font-size: clamp(14px, 1.2vw, 17px);
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+    .design-q span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+
+    /* ========== Device chapters (TV / Mobile / Web) ========== */
+    .device-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px 24px;
+      margin-bottom: clamp(14px, 2.5vh, 22px);
+    }
+    .device-head .eq {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(16px, 1.5vw, 20px);
+      color: var(--rose);
+    }
+    .device-head .note {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 28em;
+      line-height: 1.45;
+    }
+
+    /* TV: one large screen */
+    .tv-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tv-stage .frame {
+      width: min(100%, 920px);
+      height: min(58vh, 520px);
+      border-radius: 16px;
+    }
+    .tv-stage .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #0a0a09;
+    }
+    .tv-cap {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .tv-cap em {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-2);
+    }
+
+    /* Mobile: single-row horizontal scroll strip + lightbox */
+    .mob-strip-wrap {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+    }
+    .mob-strip-hint {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-align: right;
+      padding-right: 4px;
+    }
+    .mob-strip {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-end;
+      gap: 16px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 12px 4px 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(184, 69, 69, 0.45) transparent;
+    }
+    .mob-strip::-webkit-scrollbar { height: 6px; }
+    .mob-strip::-webkit-scrollbar-thumb {
+      background: rgba(184, 69, 69, 0.4);
+      border-radius: 99px;
+    }
+    .mob-card {
+      flex: 0 0 auto;
+      width: min(22vw, 180px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      scroll-snap-align: start;
+      cursor: zoom-in;
+      border: 0;
+      background: none;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      text-align: center;
+    }
+    .mob-card:focus-visible {
+      outline: 2px solid var(--rose);
+      outline-offset: 4px;
+      border-radius: 12px;
+    }
+    .mob-card .frame {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 18px 36px rgba(0,0,0,0.4);
+      background: #0a0a09;
+      overflow: hidden;
+      line-height: 0;
+      border: 1px solid var(--line);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .mob-card:hover .frame {
+      border-color: rgba(184, 69, 69, 0.45);
+      box-shadow: 0 22px 44px rgba(0,0,0,0.5);
+    }
+    .mob-card .frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      object-position: top center;
+      max-height: min(52vh, 460px);
+      pointer-events: none;
+    }
+    .mob-card figcaption {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .mob-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-start;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: rgba(8, 7, 6, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .lightbox.is-open { display: flex; }
+    .lightbox__img {
+      max-width: min(92vw, 420px);
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.55);
+      border: 1px solid var(--line-2);
+    }
+    .lightbox__close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line-2);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .lightbox__close:hover { background: rgba(184, 69, 69, 0.25); }
+    .lightbox__cap {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Web: side-by-side comparison */
+    .web-compare {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(14px, 2vw, 24px);
+      align-items: stretch;
+    }
+    .web-pane {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+    }
+    .web-pane__label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .web-pane__label h3 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .web-pane__label span {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--rose);
+    }
+    .web-pane .frame {
+      flex: 1;
+      min-height: 0;
+      border-radius: 12px;
+    }
+    .web-pane .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      background: #0a0a09;
+    }
+    .web-pane .cap { margin-top: 10px; flex-shrink: 0; }
+    .web-bar {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .web-bar strong { color: var(--ink-2); font-weight: 500; }
+
+    /* ========== Validation process (two cards side by side) ========== */
+    .validate-pair {
+      flex: 1;
+      min-height: 0;
+      margin-top: clamp(28px, 5vh, 48px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(16px, 2.5vw, 28px);
+      align-items: stretch;
+      max-width: 960px;
+    }
+    .v-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      padding: clamp(28px, 4vh, 44px) clamp(24px, 3vw, 36px);
+      border-radius: 18px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      min-height: min(36vh, 280px);
+    }
+    .v-card .step-n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--rose);
+      letter-spacing: 0.04em;
+    }
+    .v-card h4 {
+      font-size: clamp(22px, 2.4vw, 30px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .v-card p {
+      font-size: clamp(14px, 1.2vw, 17px);
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 22em;
+    }
+
+    /* ========== Results metrics ========== */
+    .results-page .slide__inner {
+      justify-content: center;
+      max-width: 900px;
+    }
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      margin-top: clamp(28px, 5vh, 40px);
+    }
+    .metric {
+      display: grid;
+      grid-template-columns: minmax(160px, 0.9fr) 1fr;
+      gap: 24px;
+      align-items: baseline;
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+    .metric:last-child { border-bottom: 1px solid var(--line); }
+    .metric__num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .metric__num .accent { color: var(--rose); font-style: italic; }
+    .metric__tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .metric__tag--test { color: var(--rose); }
+    .metric__tag--biz { color: var(--muted); }
+    .metric__label {
+      font-size: clamp(14px, 1.2vw, 17px);
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    /* ========== P8 ========== */
+    .p8 .slide__inner {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 920px;
+    }
+    .p8-quote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1.28;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      max-width: 14em;
+      text-wrap: balance;
+    }
+    .p8-quote em {
+      font-style: italic;
+      color: var(--rose);
+    }
+    .p8-chips {
+      margin-top: clamp(32px, 5vh, 48px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    /* print */
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      html { scroll-snap-type: none; overflow: visible; height: auto; }
+      body { background: #12110f; }
+      .progress, .page-num, .notes { display: none !important; }
+      .slide {
+        height: 210mm;
+        max-height: none;
+        min-height: 0;
+        page-break-after: always;
+        break-after: page;
+        scroll-snap-align: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .slide:last-child { page-break-after: auto; }
+    }
+
+    @media (max-width: 960px) {
+      .p1 .slide__inner,
+      .process .slide__inner,
+      .validate-pair,
+      .web-compare { grid-template-columns: 1fr; }
+      .p1-stage .frame--hero img { max-height: min(40vh, 320px); }
+      .mob-card { width: min(42vw, 150px); }
+      .mob-card .frame img { max-height: min(48vh, 360px); }
+      .slide::before { font-size: 56px; opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><div class="progress__fill" id="progressFill"></div></div>
+  <div class="page-num" id="pageNum"><b>01</b> / 08</div>
+
+  <div class="deck">
+
+    <!-- P1 -->
+    <section class="slide p1" data-slide="1" data-index="01">
+      <div class="slide__inner">
+        <div>
+          <p class="eyebrow p1-kicker">Case · Cross-device UX</p>
+          <h1 class="brand">FainTV</h1>
+          <p class="p1-title">跨 TV · Mobile · Web 的訂閱體驗設計</p>
+          <div class="p1-chips">
+            <span class="chip">台灣 OTT</span>
+            <span class="chip">電視盒 + Mobile / Tablet / Web</span>
+          </div>
+          <div class="p1-meta">
+            <p><strong>1M+</strong> 用戶 · 家庭與年長觀眾 · 訂閱制 + 商城</p>
+            <p><strong>My Role</strong> — UI/UX Designer</p>
+            <p>2 Designers · 1 PM · 3 Engineers</p>
+          </div>
+        </div>
+        <div class="p1-stage">
+          <div class="frame frame--hero">
+            <img src="./assets/hero-family.jpg" alt="三代同堂：TV、Mobile、Web 一起使用 FainTV" />
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        FainTV 是台灣影音串流，客廳電視盒為主，也有手機與網頁。訂閱加商城是營收核心。我負責跨三端 UX：同一套會員與訂閱體驗，在不同裝置上一致且各自好用。
+      </aside>
+    </section>
+
+    <!-- P2 -->
+    <section class="slide p2" data-slide="2" data-index="02">
+      <div class="slide__inner">
+        <p class="eyebrow">Symptoms</p>
+        <h2 class="display">Main Issues</h2>
+        <div class="p2-list">
+          <div class="p2-item"><span class="idx">01</span>訂閱流程流失嚴重</div>
+          <div class="p2-item"><span class="idx">02</span>四種裝置無法流暢體驗</div>
+          <div class="p2-item">
+            <span class="idx">03</span>
+            <div class="p2-item__main">
+              <span class="p2-item__label">TV 端任務完成率僅</span>
+              <span class="accent">30%</span>
+            </div>
+          </div>
+        </div>
+        <div class="p2-context">
+          <p class="p2-context__text"><span>Key context</span> TV 主力用戶約 60 歲</p>
+          <div class="avatars" aria-label="年長用戶示意">
+            <img src="./assets/avatars/e1.jpg" alt="" />
+            <img src="./assets/avatars/e2.jpg" alt="" />
+            <img src="./assets/avatars/e3.jpg" alt="" />
+            <img src="./assets/avatars/e4.jpg" alt="" />
+            <img src="./assets/avatars/e5.jpg" alt="" />
+            <img src="./assets/avatars/e6.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        重設計前：訂閱走不完、四種裝置無法流暢體驗、TV 完成率約三成。問題不只是畫面不一樣，而是跨裝置任務與標準沒被統一。我們知道有問題，但還不能直接下解法。主力用戶是六十歲左右的年長觀眾。
+      </aside>
+    </section>
+
+    <!-- Process -->
+    <section class="slide process" data-slide="3" data-index="03" id="process">
+      <div class="slide__inner">
+        <div>
+          <p class="eyebrow">Design process</p>
+          <h2 class="display">How we knew</h2>
+          <p class="lede" style="margin-top:12px">先打開問題，再收斂原因；方案之後才做驗證。</p>
+          <div class="process-steps">
+            <div class="process-step">
+              <span class="n">01</span>
+              <div>
+                <h3>
+                  <a class="process-link" href="./survey.html">問卷 <span class="process-link__hint">查看題目 →</span></a>
+                </h3>
+                <p>確認問題方向與普遍程度——訂閱困難是否真的大規模發生。</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <span class="n">02</span>
+              <div>
+                <h3>訪談</h3>
+                <p>深入年長用戶與代訂情境，挖出遙控器、email、誰在付費。</p>
+              </div>
+            </div>
+            <div class="process-step">
+              <span class="n">03</span>
+              <div>
+                <h3>易用性測試 → 迭代</h3>
+                <p>方案落地後測任務完成與卡點，再改跨裝置路徑。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="process-media">
+          <div class="ph">
+            <span class="ph__label">待補圖／影片</span>
+            <span class="ph__file">research-remote.jpg 或 pain.mp4</span>
+            <span class="ph__hint">年長用戶遙控器輸入、訪談現場（去識別）</span>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        流程：問卷打開、訪談收斂、方案後易用性測試迭代。這頁只講「怎麼知道」，不講洞察結論。
+      </aside>
+    </section>
+
+    <!-- Insights -->
+    <section class="slide insight-page" data-slide="4" data-index="04">
+      <div class="slide__inner">
+        <p class="eyebrow">Insights</p>
+        <h2 class="insight-quote">「訂閱的人，往往不是看電視的人」</h2>
+        <div class="insight">
+          <span class="n">1</span>
+          <p>遙控器輸入卡號與個人資料<strong>根本不可能</strong>。一個繁體中文字要填好送出至少需按十次以上，把自己名字輸入完就已經累了。</p>
+        </div>
+        <div class="insight">
+          <span class="n">2</span>
+          <p>登入流程的 email <strong>根本行不通</strong>——年長使用者根本沒有使用 email 的習慣。→ 改用<strong>電話號碼登入</strong></p>
+        </div>
+        <div class="insight">
+          <span class="n">3</span>
+          <p>訂閱常由<strong>子女</strong>在手機／電腦代完成</p>
+        </div>
+        <div class="design-q">
+          <span>Design question</span>
+          如何用「一套跨裝置設計」，讓觀看與訂閱任務在對的人、對的裝置上完成？
+        </div>
+      </div>
+      <aside class="notes">
+        洞察來自訪談：遙控器輸入卡號與個人資料幾乎不可能，繁中一個字就要按十次以上，光打名字就累了；登入用 email 也行不通，年長用戶沒有 email 習慣，因此改電話登入；訂閱常由子女代完成。需要跨裝置任務模型，不是單修 TV 表單。
+      </aside>
+    </section>
+
+    <!-- P5 · TV -->
+    <section class="slide" data-slide="5" data-index="05" id="sec-tv">
+      <div class="slide__inner">
+        <p class="eyebrow">System · 01 / TV</p>
+        <div class="device-head">
+          <div>
+            <h2 class="headline">同一產品 · 三端設計</h2>
+            <p class="eq" style="margin-top:6px">TV = 看／驗證</p>
+          </div>
+          <p class="note">10-foot 環境：電話註冊、大字級、遙控器可完成的最少步驟</p>
+        </div>
+        <div class="tv-stage">
+          <div class="frame">
+            <img src="./assets/device-tv-join.jpg" alt="TV 會員基本資料" />
+          </div>
+        </div>
+        <p class="tv-cap">會員基本資料 · 焦點框 · 遙控器操作｜操作者：<em>觀看者</em></p>
+      </div>
+      <aside class="notes">
+        TV 端承接「看」與身分驗證，不硬塞完整結帳。電話帳號與全裝置同一套會員體系；錯誤與焦點狀態為 10-foot 設計。
+      </aside>
+    </section>
+
+    <!-- P5 · Mobile -->
+    <section class="slide" data-slide="6" data-index="06">
+      <div class="slide__inner">
+        <p class="eyebrow">System · 02 / Mobile</p>
+        <div class="device-head">
+          <div>
+            <h2 class="headline">Mobile 訂閱流程</h2>
+            <p class="eq" style="margin-top:6px">Mobile = 訂 · 子女代訂主場 · 七步完成</p>
+          </div>
+          <p class="note">高輸入任務放在觸控裝置；完成後電視同步啟用</p>
+        </div>
+        <div class="mob-strip-wrap">
+          <div class="mob-strip" id="mobStrip">
+            <button type="button" class="mob-card" data-full="./assets/device-m-01.jpg" data-cap="01 會員資料">
+              <div class="frame"><img src="./assets/device-m-01.jpg" alt="01 填寫會員資料" /></div>
+              <figcaption>01 會員資料</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-02.jpg" data-cap="02 會員資訊">
+              <div class="frame"><img src="./assets/device-m-02.jpg" alt="02 會員資訊" /></div>
+              <figcaption>02 會員資訊</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-03.jpg" data-cap="03 住址">
+              <div class="frame"><img src="./assets/device-m-03.jpg" alt="03 會員住址" /></div>
+              <figcaption>03 住址</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-04.jpg" data-cap="04 付款">
+              <div class="frame"><img src="./assets/device-m-04.jpg" alt="04 付款方式" /></div>
+              <figcaption>04 付款</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-05.jpg" data-cap="05 掃卡">
+              <div class="frame"><img src="./assets/device-m-05.jpg" alt="05 信用卡" /></div>
+              <figcaption>05 掃卡</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-06.jpg" data-cap="06 確認">
+              <div class="frame"><img src="./assets/device-m-06.jpg" alt="06 確認訂單" /></div>
+              <figcaption>06 確認</figcaption>
+            </button>
+            <button type="button" class="mob-card" data-full="./assets/device-m-07.jpg" data-cap="07 完成">
+              <div class="frame"><img src="./assets/device-m-07.jpg" alt="07 訂閱完成" /></div>
+              <figcaption>07 完成</figcaption>
+            </button>
+          </div>
+          <div class="mob-foot">
+            <span class="chip">掃卡 · 原生鍵盤</span>
+            <span class="chip chip--rose">完成頁：家中電視已同步啟用</span>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        Mobile 七步：資料、資訊、住址、付款、掃卡、確認、完成。操作者常為子女；完成頁明確告知長輩無需再操作。
+      </aside>
+    </section>
+
+    <!-- P6 · Web compare -->
+    <section class="slide" data-slide="7" data-index="07">
+      <div class="slide__inner">
+        <p class="eyebrow">System · 03 / Web</p>
+        <div class="device-head">
+          <div>
+            <h2 class="headline">Web = 用戶複雜資訊管理</h2>
+            <p class="eq" style="margin-top:6px">可收視／消費紀錄 · 兩端比較</p>
+          </div>
+          <p class="note">Web 端提供詳細的用戶資訊</p>
+        </div>
+        <div class="web-compare">
+          <div class="web-pane">
+            <div class="web-pane__label">
+              <h3>TV · 消費紀錄</h3>
+              <span>遙控器 · 單列焦點</span>
+            </div>
+            <div class="frame">
+              <img src="./assets/device-web-tv-records.jpg" alt="TV 端訂購收視紀錄" />
+            </div>
+          </div>
+          <div class="web-pane">
+            <div class="web-pane__label">
+              <h3>Web · 消費紀錄</h3>
+              <span>滑鼠 · 完整表格</span>
+            </div>
+            <div class="frame">
+              <img src="./assets/device-web-desktop-records.jpg" alt="Web 端點數與消費紀錄" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        Web 端提供詳細的用戶資訊與完整帳務管理；TV 則是精簡查閱。同一任務、不同表達。
+      </aside>
+    </section>
+
+    <!-- Validation process -->
+    <section class="slide" data-slide="8" data-index="08">
+      <div class="slide__inner">
+        <p class="eyebrow">Validation</p>
+        <h2 class="headline">驗證過程</h2>
+        <div class="validate-pair">
+          <div class="v-card">
+            <span class="step-n">01</span>
+            <h4>易用性測試</h4>
+            <p>任務能否完成、時間、卡點 → 再修改</p>
+          </div>
+          <div class="v-card">
+            <span class="step-n">02</span>
+            <h4>迭代</h4>
+            <p>依測試發現調整跨裝置路徑</p>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        方案落地後做易用性測試：看任務能否完成、花多久、卡在哪；再依發現迭代跨裝置路徑。數字結果在下一頁。
+      </aside>
+    </section>
+
+    <!-- Results -->
+    <section class="slide results-page" data-slide="9" data-index="09">
+      <div class="slide__inner">
+        <p class="eyebrow">Results</p>
+        <h2 class="headline">結果</h2>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric__num"><span class="accent">30%</span> → 80%</div>
+            <div>
+              <div class="metric__tag metric__tag--test">體驗／測試</div>
+              <div class="metric__label">年長用戶任務完成率</div>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="metric__num">20 → 5 分</div>
+            <div>
+              <div class="metric__tag metric__tag--test">易用性測試</div>
+              <div class="metric__label">任務計時（非全站 analytics）</div>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="metric__num"><span class="accent">+45%</span></div>
+            <div>
+              <div class="metric__tag metric__tag--biz">業務結果</div>
+              <div class="metric__label">營收成長（與測試分開）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        完成率與時間來自易用性測試；營收是業務結果、分開表述。被問歸因時承認還有其他因素。
+      </aside>
+    </section>
+
+    <!-- Takeaway -->
+    <section class="slide p8" data-slide="10" data-index="10">
+      <div class="slide__inner">
+        <p class="p8-quote">跨裝置一致的，是<em>心智模型</em>與設計標準，不是介面。</p>
+        <div class="p8-chips">
+          <span class="chip">TV 看／驗證</span>
+          <span class="chip">Mobile 訂</span>
+          <span class="chip">Web 管</span>
+          <span class="chip chip--rose">操作者甚至不是同一個人</span>
+        </div>
+      </div>
+      <aside class="notes">
+        一致性定在任務、角色與標準，不是像素。看多裝置、多角色產品（含官網 B2C／B2B）也是：同一套設計邏輯的正確表達，不是同一個版面複製。
+      </aside>
+    </section>
+  </div>
+
+  <div class="lightbox" id="lightbox" hidden aria-modal="true" role="dialog" aria-label="放大預覽">
+    <button type="button" class="lightbox__close" id="lightboxClose" aria-label="關閉">×</button>
+    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+    <p class="lightbox__cap" id="lightboxCap"></p>
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+      var total = slides.length;
+      var current = 0;
+      var notesOn = false;
+      var pageNum = document.getElementById("pageNum");
+      var progressFill = document.getElementById("progressFill");
+      var lightbox = document.getElementById("lightbox");
+      var lightboxImg = document.getElementById("lightboxImg");
+      var lightboxCap = document.getElementById("lightboxCap");
+      var lightboxClose = document.getElementById("lightboxClose");
+      var mobStrip = document.getElementById("mobStrip");
+
+      function pad(n) { return n < 10 ? "0" + n : String(n); }
+
+      function setPage(i) {
+        if (i < 0 || i >= total) return;
+        current = i;
+        pageNum.innerHTML = "<b>" + pad(current + 1) + "</b> / " + pad(total);
+        progressFill.style.width = ((current + 1) / total * 100) + "%";
+        slides.forEach(function (s, idx) {
+          var n = s.querySelector(".notes");
+          if (!n) return;
+          if (notesOn && idx === current) n.classList.add("is-visible");
+          else n.classList.remove("is-visible");
+        });
+      }
+
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              var i = slides.indexOf(entry.target);
+              if (i >= 0) setPage(i);
+            });
+          },
+          { root: null, threshold: 0.55 }
+        );
+        slides.forEach(function (s) { io.observe(s); });
+      }
+
+      function scrollToIndex(i) {
+        if (i < 0 || i >= total) return;
+        slides[i].scrollIntoView({ behavior: "smooth", block: "start" });
+        setPage(i);
+      }
+
+      function openLightbox(src, cap) {
+        lightboxImg.src = src;
+        lightboxImg.alt = cap || "";
+        lightboxCap.textContent = cap || "";
+        lightbox.hidden = false;
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        lightboxClose.focus();
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        lightbox.hidden = true;
+        lightboxImg.src = "";
+        document.body.style.overflow = "";
+      }
+
+      document.querySelectorAll(".mob-card").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          openLightbox(btn.getAttribute("data-full"), btn.getAttribute("data-cap"));
+        });
+      });
+
+      lightboxClose.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", function (e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      // Horizontal wheel on mobile strip
+      if (mobStrip) {
+        mobStrip.addEventListener(
+          "wheel",
+          function (e) {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+              e.preventDefault();
+              mobStrip.scrollLeft += e.deltaY;
+            }
+          },
+          { passive: false }
+        );
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (lightbox.classList.contains("is-open")) {
+          if (e.key === "Escape" || e.key === " ") {
+            e.preventDefault();
+            closeLightbox();
+          }
+          return;
+        }
+        // Don't steal left/right when focus is in the horizontal strip
+        var inStrip = mobStrip && mobStrip.contains(document.activeElement);
+        if (e.key === "ArrowDown" || e.key === "PageDown" || (e.key === " " && !inStrip)) {
+          e.preventDefault();
+          scrollToIndex(current + 1);
+        } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+          e.preventDefault();
+          scrollToIndex(current - 1);
+        } else if (e.key === "ArrowRight" && !inStrip) {
+          e.preventDefault();
+          scrollToIndex(current + 1);
+        } else if (e.key === "ArrowLeft" && !inStrip) {
+          e.preventDefault();
+          scrollToIndex(current - 1);
+        } else if (e.key === "n" || e.key === "N") {
+          e.preventDefault();
+          notesOn = !notesOn;
+          setPage(current);
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          scrollToIndex(0);
+        } else if (e.key === "End") {
+          e.preventDefault();
+          scrollToIndex(total - 1);
+        }
+      });
+
+      setPage(0);
+    })();
+  </script>
+</body>
+</html>
