@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>康健基因 — Interview Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       康健基因 / Gene Health Tech — ASUS UX interview deck
+       4 slides. Aligned with faintv/index.html tokens & chrome.
+       Thesis: research-driven B2B→B2C rebrand + IA + illustrations.
+       ============================================================ */
+    :root {
+      --bg: #12110f;
+      --bg-2: #1a1916;
+      --bg-3: #22211d;
+      --ink: #f3f1ec;
+      --ink-2: #d8d4cb;
+      --muted: #8c877c;
+      --faint: #5c5850;
+      --line: rgba(243, 241, 236, 0.09);
+      --line-2: rgba(243, 241, 236, 0.16);
+      --rose: #B84545;
+      --rose-soft: rgba(184, 69, 69, 0.14);
+      --ph: #2a2925;
+      --ph-line: rgba(243, 241, 236, 0.14);
+      --serif: "Cormorant Garamond", Georgia, "Songti TC", "Noto Serif TC", serif;
+      --sans: "Space Grotesk", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --pad-x: clamp(28px, 5.5vw, 88px);
+      --pad-y: clamp(36px, 6.5vh, 72px);
+      --max: 1240px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      height: 100%;
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100%;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink-2);
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(184, 69, 69, 0.06), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(184, 69, 69, 0.04), transparent 45%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; scroll-snap-type: y proximity; }
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+
+    .progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      z-index: 100;
+      background: rgba(243, 241, 236, 0.06);
+    }
+    .progress__fill {
+      height: 100%;
+      width: 25%;
+      background: var(--rose);
+      transition: width 0.35s var(--ease);
+    }
+
+    .page-num {
+      position: fixed;
+      right: var(--pad-x);
+      bottom: 20px;
+      z-index: 100;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--faint);
+      pointer-events: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .page-num b { color: var(--ink-2); font-weight: 500; }
+
+    .back-hub {
+      position: fixed;
+      left: var(--pad-x);
+      bottom: 18px;
+      z-index: 100;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.25s var(--ease);
+    }
+    .back-hub:hover { color: var(--ink-2); }
+
+    .slide {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-height: 100vh;
+      max-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: var(--pad-y) var(--pad-x);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+    }
+
+    .slide::before {
+      content: attr(data-index);
+      position: absolute;
+      right: var(--pad-x);
+      top: var(--pad-y);
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 1;
+      color: rgba(243, 241, 236, 0.035);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .slide__inner {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: clamp(10px, 1.6vh, 18px);
+    }
+    .eyebrow::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--rose);
+      opacity: 0.7;
+    }
+
+    .brand {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .display {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 4vw, 52px);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+
+    .headline {
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: clamp(22px, 2.4vw, 32px);
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+
+    .lede {
+      font-size: clamp(14px, 1.2vw, 17px);
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 38em;
+    }
+
+    .accent { color: var(--rose); font-weight: 500; }
+
+    .frame {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line-2);
+      background: rgba(243, 241, 236, 0.03);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--ink-2);
+    }
+    .chip--rose {
+      border-color: rgba(184, 69, 69, 0.35);
+      background: var(--rose-soft);
+      color: #e8b4b4;
+    }
+
+    .notes {
+      display: none;
+      position: fixed;
+      left: var(--pad-x);
+      right: var(--pad-x);
+      bottom: 52px;
+      z-index: 90;
+      max-width: 720px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line-2);
+      background: rgba(18, 17, 15, 0.92);
+      backdrop-filter: blur(12px);
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+    .notes.is-visible { display: block; }
+    .notes::before {
+      content: "NOTES";
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--rose);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    /* ========== P1 Opening ========== */
+    .p1 .slide__inner {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: clamp(28px, 4vw, 56px);
+      align-items: center;
+    }
+    .p1-title {
+      margin-top: 14px;
+      font-size: clamp(16px, 1.5vw, 20px);
+      line-height: 1.45;
+      color: var(--ink-2);
+      max-width: 22em;
+    }
+    .p1-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .p1-meta {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .p1-meta strong { color: var(--ink); font-weight: 500; }
+    .p1-challenge {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      height: 100%;
+    }
+    .p1-brief-card,
+    .p1-q-card {
+      padding: 22px 24px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+    }
+    .p1-q-card {
+      border-color: rgba(184, 69, 69, 0.28);
+      background: var(--rose-soft);
+    }
+    .p1-brief-card span,
+    .p1-q-card span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 10px;
+    }
+    .p1-brief-card p,
+    .p1-q-card p {
+      font-size: clamp(15px, 1.4vw, 19px);
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+    .p1-brief-card p strong,
+    .p1-q-card p strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .p1-stage .frame--hero {
+      aspect-ratio: 16 / 10;
+      max-height: min(58vh, 520px);
+    }
+    .p1-stage .frame--hero img {
+      object-fit: cover;
+      object-position: center center;
+    }
+    .p1-caption {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .p1-caption strong { color: var(--ink-2); font-weight: 500; }
+
+    /* ========== P2 Double Diamond visual ========== */
+    .p2 .slide__inner {
+      gap: clamp(10px, 1.6vh, 16px);
+      justify-content: stretch;
+    }
+
+    .p2-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px 24px;
+    }
+    .p2-head .display {
+      font-size: clamp(22px, 2.8vw, 34px);
+      margin: 0;
+    }
+    .p2-head .lede-mini {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 42em;
+      line-height: 1.45;
+    }
+    .p2-head .lede-mini strong { color: var(--ink-2); font-weight: 500; }
+
+    .dd-viz {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .dd-canvas {
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .dd-canvas svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .dd-phases {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+    }
+    .dd-phase {
+      padding: 10px 14px;
+    }
+    .dd-phase:not(:last-child) {
+      border-right: 1px solid var(--line);
+    }
+    .dd-phase-tag {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 6px;
+    }
+    .dd-phase p {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .dd-phase p strong {
+      color: var(--ink-2);
+      font-weight: 500;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .hmw {
+      flex-shrink: 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(184, 69, 69, 0.28);
+      background: var(--rose-soft);
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--ink-2);
+    }
+    .hmw span {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .hmw strong { color: var(--ink); font-weight: 500; }
+
+    @media (max-width: 960px) {
+      .dd-phases { grid-template-columns: 1fr 1fr; }
+      .dd-phase:nth-child(2) { border-right: none; }
+      .dd-phase:nth-child(3),
+      .dd-phase:nth-child(4) { border-top: 1px solid var(--line); }
+      .dd-phase:nth-child(4) { border-right: none; }
+    }
+
+    /* ========== P3 Insight ========== */
+    .insight-page .slide__inner {
+      justify-content: center;
+      gap: clamp(16px, 2.5vh, 28px);
+      max-width: 900px;
+    }
+    .insight-quote {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 4.2vw, 48px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .insight-body {
+      font-size: clamp(14px, 1.2vw, 17px);
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 100%;
+      white-space: normal;
+    }
+    .insight-body strong { color: var(--ink); font-weight: 500; }
+
+    .insight-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .stat-card {
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+    }
+    .stat-card .num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(36px, 4vw, 48px);
+      line-height: 1;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .stat-card .num span { color: var(--rose); }
+    .stat-card h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .stat-card p {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .design-q {
+      margin-top: 4px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(184, 69, 69, 0.25);
+      background: var(--rose-soft);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-2);
+    }
+    .design-q span {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .insight-visual {
+      width: 100%;
+      margin-top: 4px;
+    }
+    .insight-visual .frame {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+      max-height: min(36vh, 320px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .insight-visual .frame img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: min(36vh, 320px);
+      object-fit: contain;
+      object-position: center center;
+    }
+
+    /* ========== P4 Delivery ========== */
+    .p4 .slide__inner {
+      gap: clamp(12px, 1.8vh, 20px);
+      justify-content: center;
+    }
+    .deliver-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .deliver-card {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg-2);
+    }
+    .deliver-card .n {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .deliver-card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .deliver-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .deliver-card li {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      padding-left: 12px;
+      position: relative;
+    }
+    .deliver-card li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--rose);
+      opacity: 0.55;
+    }
+
+    .p4-visuals {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      min-height: 0;
+      flex: 0 1 auto;
+    }
+    .p4-visuals .frame {
+      max-height: min(26vh, 240px);
+    }
+    .p4-visuals .frame img {
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .impact-block {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .impact-list {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(243, 241, 236, 0.02);
+    }
+    .impact-list h3 {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .impact-list ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .impact-list li {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--ink-2);
+      padding-left: 14px;
+      position: relative;
+    }
+    .impact-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rose);
+      opacity: 0.7;
+    }
+    .impact-list li strong { color: var(--ink); font-weight: 500; }
+    .impact-list .ga4-ph {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--faint);
+      border-top: 1px dashed var(--line);
+      padding-top: 8px;
+    }
+
+    .asus-line {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(184, 69, 69, 0.28);
+      background: var(--rose-soft);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .asus-line span {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rose);
+      font-weight: 600;
+    }
+    .asus-line p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink-2);
+    }
+    .asus-line em {
+      color: var(--ink);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      html { scroll-snap-type: none; overflow: visible; height: auto; }
+      .progress, .page-num, .notes { display: none !important; }
+      .slide {
+        height: 210mm;
+        max-height: none;
+        min-height: 0;
+        page-break-after: always;
+        break-after: page;
+        scroll-snap-align: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .slide:last-child { page-break-after: auto; }
+    }
+
+    @media (max-width: 960px) {
+      .p1 .slide__inner,
+      .insight-stats,
+      .deliver-grid,
+      .p4-visuals,
+      .impact-block {
+        grid-template-columns: 1fr;
+      }
+      .p1-stage .frame--hero { max-height: min(36vh, 280px); }
+      .slide::before { font-size: 56px; opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><div class="progress__fill" id="progressFill"></div></div>
+  <a class="back-hub" href="../hub/index.html">← Hub</a>
+  <div class="page-num" id="pageNum"><b>01</b> / 04</div>
+
+  <div class="deck">
+
+    <!-- ========== P1 定位 ========== -->
+    <section class="slide p1" data-slide="1" data-index="01">
+      <div class="slide__inner">
+        <div>
+          <p class="eyebrow">Case · 10 週年翻新 · Website</p>
+          <h1 class="brand">康健基因</h1>
+          <p class="p1-title">十週年品牌翻新——讓 B2B 基因科技品牌，也說得進 B2C</p>
+          <div class="p1-chips">
+            <span class="chip">Public Health ↔ Scientific Research</span>
+            <span class="chip chip--rose">Lead · 4 個月</span>
+          </div>
+          <div class="p1-meta">
+            <p><strong>My Role</strong> — Lead UI/UX &amp; Product Designer</p>
+            <p>Client — Health GeneTech Corp.</p>
+          </div>
+        </div>
+        <div class="p1-stage">
+          <div class="frame frame--hero">
+            <img
+              src="https://images.squarespace-cdn.com/content/v1/69454dff3cd6134ff5e7f86a/26e8690c-4bb6-4fe0-9ffe-77550d479b06/2.1+loading+page.jpg"
+              alt="康健基因官網品牌首屏"
+            />
+          </div>
+          <p class="p1-caption"><strong>康健基因</strong> — 基因科技品牌，十週年翻新官網。挑戰：如何同時說服 B2B 專業研究端與 B2C 一般健康使用者？</p>
+        </div>
+      </div>
+      <aside class="notes">
+        十週年翻新氣象：形象加官網。商業上要從 B2B 開闊 B2C。關鍵設計是從 Hero 就做使用者分流——左邊 Public Health 給一般健康與家庭；右邊 Scientific Research 給實驗室與專業。不是進站後才分，第一眼就讓人選自己的路。後面再講名詞與易用性。
+      </aside>
+    </section>
+
+    <!-- ========== P2 雙鑽石（圖形） ========== -->
+    <section class="slide p2" data-slide="2" data-index="02">
+      <div class="slide__inner">
+        <div class="p2-head">
+          <div>
+            <p class="eyebrow" style="margin-bottom:8px">Process · Double Diamond</p>
+            <h2 class="display">雙鑽石 · 康健基因</h2>
+          </div>
+          <p class="lede-mini">客戶 brief：十週年翻新 · <strong>B2B→B2C</strong> · 首頁要放專有名詞 → 研究後改層級</p>
+        </div>
+
+        <div class="dd-viz" aria-label="雙鑽石設計流程圖">
+          <div class="dd-canvas">
+            <svg viewBox="0 0 1000 260" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <!-- Discover: faint at entry point, brighter toward center -->
+                <linearGradient id="gDiscover" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="270" y2="0">
+                  <stop offset="0%" stop-color="#B84545" stop-opacity="0.03"/>
+                  <stop offset="100%" stop-color="#B84545" stop-opacity="0.22"/>
+                </linearGradient>
+                <!-- Define: brighter at center, fades to right point -->
+                <linearGradient id="gDefine" gradientUnits="userSpaceOnUse" x1="270" y1="0" x2="480" y2="0">
+                  <stop offset="0%" stop-color="#B84545" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#B84545" stop-opacity="0.03"/>
+                </linearGradient>
+                <!-- Develop: faint at left point, brighter toward center -->
+                <linearGradient id="gDevelop" gradientUnits="userSpaceOnUse" x1="520" y1="0" x2="730" y2="0">
+                  <stop offset="0%" stop-color="#B84545" stop-opacity="0.03"/>
+                  <stop offset="100%" stop-color="#B84545" stop-opacity="0.20"/>
+                </linearGradient>
+                <!-- Deliver: brighter at center, fades to right -->
+                <linearGradient id="gDeliver" gradientUnits="userSpaceOnUse" x1="730" y1="0" x2="940" y2="0">
+                  <stop offset="0%" stop-color="#B84545" stop-opacity="0.20"/>
+                  <stop offset="100%" stop-color="#B84545" stop-opacity="0.03"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Center baseline -->
+              <line x1="30" y1="130" x2="970" y2="130" stroke="rgba(243,241,236,0.07)" stroke-width="1"/>
+
+              <!-- LEFT DIAMOND fills -->
+              <polygon points="60,130 270,20 270,240" fill="url(#gDiscover)"/>
+              <polygon points="270,20 480,130 270,240" fill="url(#gDefine)"/>
+              <!-- Left diamond outline on top of fills -->
+              <polyline points="60,130 270,20 480,130 270,240 60,130" stroke="rgba(243,241,236,0.28)" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <!-- Vertical midline -->
+              <line x1="270" y1="20" x2="270" y2="240" stroke="rgba(184,69,69,0.40)" stroke-width="1" stroke-dasharray="3 5"/>
+
+              <!-- RIGHT DIAMOND fills -->
+              <polygon points="520,130 730,20 730,240" fill="url(#gDevelop)"/>
+              <polygon points="730,20 940,130 730,240" fill="url(#gDeliver)"/>
+              <!-- Right diamond outline on top of fills -->
+              <polyline points="520,130 730,20 940,130 730,240 520,130" stroke="rgba(243,241,236,0.28)" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <!-- Vertical midline -->
+              <line x1="730" y1="20" x2="730" y2="240" stroke="rgba(184,69,69,0.40)" stroke-width="1" stroke-dasharray="3 5"/>
+
+              <!-- Phase labels above each half -->
+              <text x="165" y="15" text-anchor="middle" fill="#B84545" font-size="10" font-family="Space Grotesk, sans-serif" font-weight="600" letter-spacing="1.5">DISCOVER</text>
+              <text x="375" y="15" text-anchor="middle" fill="#B84545" font-size="10" font-family="Space Grotesk, sans-serif" font-weight="600" letter-spacing="1.5">DEFINE</text>
+              <text x="625" y="15" text-anchor="middle" fill="#B84545" font-size="10" font-family="Space Grotesk, sans-serif" font-weight="600" letter-spacing="1.5">DEVELOP</text>
+              <text x="835" y="15" text-anchor="middle" fill="#B84545" font-size="10" font-family="Space Grotesk, sans-serif" font-weight="600" letter-spacing="1.5">DELIVER</text>
+
+              <!-- Diverging / Converging labels below each half -->
+              <text x="165" y="256" text-anchor="middle" fill="#5c5850" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="0.5">發散 Diverging</text>
+              <text x="375" y="256" text-anchor="middle" fill="#5c5850" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="0.5">收斂 Converging</text>
+              <text x="625" y="256" text-anchor="middle" fill="#5c5850" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="0.5">發散 Diverging</text>
+              <text x="835" y="256" text-anchor="middle" fill="#5c5850" font-size="9.5" font-family="Space Grotesk, sans-serif" letter-spacing="0.5">收斂 Converging</text>
+
+              <!-- HMW node: outer glow ring + filled circle -->
+              <circle cx="500" cy="130" r="28" fill="rgba(184,69,69,0.07)"/>
+              <circle cx="500" cy="130" r="20" fill="#12110f" stroke="#B84545" stroke-width="1.5"/>
+              <text x="500" y="134" text-anchor="middle" fill="#B84545" font-size="9" font-family="Space Grotesk, sans-serif" font-weight="700" letter-spacing="1">HMW</text>
+
+              <!-- A node -->
+              <line x1="44" y1="130" x2="60" y2="130" stroke="rgba(243,241,236,0.14)" stroke-width="1.5"/>
+              <circle cx="30" cy="130" r="14" fill="#1a1916" stroke="rgba(243,241,236,0.22)" stroke-width="1.2"/>
+              <text x="30" y="135" text-anchor="middle" fill="rgba(243,241,236,0.65)" font-size="13" font-family="Cormorant Garamond, Georgia, serif" font-style="italic">A</text>
+
+              <!-- B node -->
+              <line x1="940" y1="130" x2="956" y2="130" stroke="rgba(243,241,236,0.14)" stroke-width="1.5"/>
+              <circle cx="970" cy="130" r="14" fill="#1a1916" stroke="rgba(243,241,236,0.22)" stroke-width="1.2"/>
+              <text x="970" y="135" text-anchor="middle" fill="rgba(243,241,236,0.65)" font-size="13" font-family="Cormorant Garamond, Georgia, serif" font-style="italic">B</text>
+            </svg>
+          </div>
+
+          <!-- Phase content cards below the diamond -->
+          <div class="dd-phases">
+            <div class="dd-phase">
+              <div class="dd-phase-tag">調研 Research</div>
+              <p><strong>訪談 · 問卷</strong>Stakeholder + 使用者<br>Brief：B2B→B2C · 名詞上首頁</p>
+            </div>
+            <div class="dd-phase">
+              <div class="dd-phase-tag">整合 Synthesis</div>
+              <p><strong>Persona 雙軌</strong>Public Health / Scientific Research<br>機會：Hero 分流 · 分層</p>
+            </div>
+            <div class="dd-phase">
+              <div class="dd-phase-tag">構思 Ideation</div>
+              <p><strong>IA · User flow</strong>Wireframe（含客戶首版）<br>Hero 雙路徑方案</p>
+            </div>
+            <div class="dd-phase">
+              <div class="dd-phase-tag">實現 Implement</div>
+              <p><strong>易用性測驗 → 迭代</strong>方案驗證 · Hi-fi · CI · 官網</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hmw">
+          <span>HMW · 兩鑽銜接</span>
+          如何讓<strong>一般健康使用者</strong>與<strong>專業研究端</strong>在同一官網各走對的路——保留專業可信度，又不讓首頁術語擋住 B2C？
+        </div>
+      </div>
+      <aside class="notes">
+        雙鑽石圖形頁：左鑽 Discover→Define，右鑽 Develop→Deliver，中間 HMW。
+      </aside>
+    </section>
+
+    <!-- ========== P3 關鍵洞察 ========== -->
+    <section class="slide insight-page" data-slide="3" data-index="03">
+      <div class="slide__inner">
+        <p class="eyebrow">Insights · 易用性測驗</p>
+        <h2 class="insight-quote">首頁上的專有名詞，對使用者是「無效資訊」</h2>
+        <p class="insight-body">依客戶規劃，專業術語放在首頁露出。易用性測驗卻發現：使用者<strong>根本不知道那是什麼</strong>，無法建立信任，也無法推進「想了解／想購買」的下一步。假設被改寫：<strong>首頁堆專有名詞 ≠ 顯得專業</strong>；對 B2C 來說，看不懂的曝光只是噪音。</p>
+        <div class="insight-stats">
+          <div class="stat-card">
+            <div class="num" style="font-size:clamp(20px,2.2vw,26px);font-style:normal;font-family:var(--sans);font-weight:500;line-height:1.25;">客戶假設</div>
+            <h3>名詞放首頁 = 證明實力</h3>
+            <p>醫療專業背景驅動的規劃：技術必須第一眼被看到。</p>
+          </div>
+          <div class="stat-card">
+            <div class="num" style="font-size:clamp(20px,2.2vw,26px);font-style:normal;font-family:var(--sans);font-weight:500;line-height:1.25;">測驗發現</div>
+            <h3>看不懂 = 無效資訊</h3>
+            <p>阻擋理解與產品推廣；專業內容改放可選的深層路徑。</p>
+          </div>
+        </div>
+        <div class="design-q">
+          <span>設計決策 · 兩層分流</span>
+          <strong>① Hero</strong>：Public Health／Scientific Research 先選身分與任務 →
+          <strong>② 路徑內</strong>：專有名詞與昂貴器材再進 <strong>Tab</strong>——專業仍在，但不擋 C 端入口。
+        </div>
+        <div class="insight-visual">
+          <div class="frame">
+            <img
+              src="./assets/hero-split-insight.jpg"
+              alt="Hero 分流：Public Health（左）與 Scientific Research（右）"
+            />
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        高潮有兩層。第一層：Hero 就分流，一般人走 Public Health，專業走 Scientific Research，不是同一首頁硬塞所有人。第二層：易用性測驗發現，就算在路徑裡，首屏堆專有名詞對 C 端仍是無效資訊，所以器材與術語再進 tab。沒有刪專業，是放到對的門、對的深度。對 ASUS：先分流使用者，再決定規格露出哪一層。
+      </aside>
+    </section>
+
+    <!-- ========== P4 落地 + 貢獻 ========== -->
+    <section class="slide p4" data-slide="4" data-index="04">
+      <div class="slide__inner">
+        <p class="eyebrow">Delivery &amp; Impact</p>
+        <h2 class="headline">十週年新形象 · 易用性調整後的官網</h2>
+
+        <div class="deliver-grid">
+          <div class="deliver-card">
+            <div class="n">01 · 品牌</div>
+            <h3>翻新氣象</h3>
+            <ul>
+              <li>十週年新企業形象（CI）</li>
+              <li>logo 以摩斯點線為骨，呼應 DNA 解碼者定位</li>
+              <li>橘色主調，跳脫生技慣用藍綠</li>
+            </ul>
+          </div>
+          <div class="deliver-card">
+            <div class="n">02 · 官網 IA</div>
+            <h3>從 Hero 分流</h3>
+            <ul>
+              <li>Public Health ↔ Scientific Research</li>
+              <li>路徑內：名詞／器材 → Tab</li>
+              <li>流程插圖降低未知焦慮</li>
+            </ul>
+          </div>
+          <div class="deliver-card">
+            <div class="n">03 · 系統</div>
+            <h3>可維護交付</h3>
+            <ul>
+              <li>CI 手冊 · 12 欄網格 · 元件</li>
+              <li>Handoff-ready</li>
+              <li>服務後續產品推廣</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p4-visuals">
+          <div class="frame">
+            <img
+              src="./assets/hero-split.png"
+              alt="Hero 使用者分流：Public Health / Scientific Research"
+            />
+          </div>
+          <div class="frame">
+            <img
+              src="./assets/ci-logo-color.png"
+              alt="CI 系統：hgt logo 雙版本 + PANTONE 色票"
+              style="object-position: center top;"
+            />
+          </div>
+        </div>
+
+        <div class="impact-block">
+          <div class="impact-list">
+            <h3>網站貢獻</h3>
+            <ul>
+              <li><strong>Hero 雙路徑</strong>：Public Health / Scientific Research，進站即分流</li>
+              <li><strong>易用性改層級</strong>：名詞與器材進 Tab，不擋 C 端推廣</li>
+              <li><strong>對齊商業目標</strong>：B2B 仍在、B2C 進得來、產品說得清</li>
+            </ul>
+            <p class="ga4-ph">GA4 占位：雙路徑點擊 · 服務／流程頁 · Tab 互動 — 有數再換上</p>
+          </div>
+          <div class="asus-line">
+            <span>Takeaway · ASUS</span>
+            <p>先<strong>分流使用者</strong>，再決定規格放哪一層——Hero 選路，細節進 Tab，用測試驗證而不是全堆首屏。</p>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        落地：十週年新形象；官網從 Hero 就分流 Public Health 與 Scientific Research；路徑裡專有名詞與昂貴器材再進 tab。貢獻是 B2B 與 B2C 並存、產品推廣不被術語牆擋住。對 ASUS：消費電子也有多種使用者——先分流，再談規格露出。
+      </aside>
+    </section>
+
+  </div>
+
+  <script>
+    (function () {
+      var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+      var total = slides.length;
+      var current = 0;
+      var notesOn = false;
+      var pageNum = document.getElementById("pageNum");
+      var progressFill = document.getElementById("progressFill");
+
+      function pad(n) { return n < 10 ? "0" + n : String(n); }
+
+      function setPage(i) {
+        if (i < 0 || i >= total) return;
+        current = i;
+        pageNum.innerHTML = "<b>" + pad(current + 1) + "</b> / " + pad(total);
+        progressFill.style.width = ((current + 1) / total * 100) + "%";
+        slides.forEach(function (s, idx) {
+          var n = s.querySelector(".notes");
+          if (!n) return;
+          if (notesOn && idx === current) n.classList.add("is-visible");
+          else n.classList.remove("is-visible");
+        });
+      }
+
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              var i = slides.indexOf(entry.target);
+              if (i >= 0) setPage(i);
+            });
+          },
+          { threshold: 0.55 }
+        );
+        slides.forEach(function (s) { io.observe(s); });
+      }
+
+      function go(delta) {
+        var next = current + delta;
+        if (next < 0 || next >= total) return;
+        slides[next].scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " " || e.key === "ArrowRight") {
+          e.preventDefault();
+          go(1);
+        } else if (e.key === "ArrowUp" || e.key === "PageUp" || e.key === "ArrowLeft") {
+          e.preventDefault();
+          go(-1);
+        } else if (e.key === "n" || e.key === "N") {
+          notesOn = !notesOn;
+          setPage(current);
+        } else if (e.key === "Home") {
+          e.preventDefault();
+          slides[0].scrollIntoView({ behavior: "smooth" });
+        } else if (e.key === "End") {
+          e.preventDefault();
+          slides[total - 1].scrollIntoView({ behavior: "smooth" });
+        }
+      });
+
+      setPage(0);
+    })();
+  </script>
+</body>
+</html>
