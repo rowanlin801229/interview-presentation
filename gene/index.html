@@ -96,6 +96,70 @@
     }
     .page-num b { color: var(--ink-2); font-weight: 500; }
 
+    /* ── Lightbox ── */
+    .lb {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lb[hidden] { display: none; }
+    .lb-img {
+      max-width: 92vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+      user-select: none;
+    }
+    .lb-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: var(--ink-2);
+      font-size: 36px;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .lb-close:hover { opacity: 1; }
+    .lb-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-2);
+      font-size: 56px;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      padding: 0 16px;
+      user-select: none;
+    }
+    .lb-nav:hover { opacity: 1; }
+    .lb-prev { left: 12px; }
+    .lb-next { right: 12px; }
+    .lb-counter {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+    .ci-track img { cursor: zoom-in; }
+
     .back-hub {
       position: fixed;
       left: var(--pad-x);
@@ -105,11 +169,17 @@
       font-weight: 500;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--faint);
+      color: #fff;
+      background: var(--rose);
       text-decoration: none;
-      transition: color 0.25s var(--ease);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: background 0.25s var(--ease), opacity 0.25s var(--ease);
     }
-    .back-hub:hover { color: var(--ink-2); }
+    .back-hub:hover { background: color-mix(in srgb, var(--rose) 88%, #000); color: #fff; }
 
     .slide {
       position: relative;
@@ -545,29 +615,105 @@
       width: 100%;
       margin-top: 4px;
     }
-    .insight-visual .frame {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: var(--bg-2);
-      max-height: min(36vh, 320px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .insight-visual .frame img {
-      width: auto;
+    .insight-visual img {
+      width: 100%;
       height: auto;
-      max-width: 100%;
       max-height: min(36vh, 320px);
       object-fit: contain;
+      object-position: center;
+      border-radius: 10px;
+      display: block;
       object-position: center center;
     }
 
-    /* ========== P4 Delivery ========== */
+    /* ========== P4 Delivery ==========
+       Proportion rules (do not break):
+       - Only constrain ONE axis on images; the other stays auto
+       - Never force aspect-ratio that != asset
+       - Never object-fit: cover on website / CI deliverables
+       - Website full: ~0.22:1 tall → width:100% + height:auto, frame scrolls Y
+       - CI spreads: ~2.9:1 wide → height capped + width:auto, rail scrolls X
+    */
+    .p4 {
+      height: auto;
+      min-height: 100dvh;
+      max-height: none;
+      overflow: visible;
+      scroll-snap-align: start;
+    }
     .p4 .slide__inner {
-      gap: clamp(12px, 1.8vh, 20px);
-      justify-content: center;
+      gap: clamp(18px, 2.4vh, 32px);
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .p4-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+    .p4-section__title {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+    .p4-section__hint {
+      font-size: 11px;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+    }
+
+    /* Website: natural tall ratio, only width constrained */
+    .website-frame {
+      width: 100%;
+      max-height: min(48vh, 420px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .website-frame img {
+      width: 100%;
+      height: auto; /* keep 2400×10970 proportion — never set height */
+      display: block;
+    }
+
+    /* CI handbook: natural wide ratio, only height constrained, swipe X */
+    .ci-rail {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+    }
+    .ci-rail::-webkit-scrollbar { height: 3px; }
+    .ci-rail::-webkit-scrollbar-track { background: transparent; }
+    .ci-rail::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 99px; }
+    .ci-rail--lg .ci-track img { height: min(60vh, 480px); }
+    .ci-track {
+      display: flex;
+      gap: 12px;
+      width: max-content;
+      padding: 2px 2px 4px;
+    }
+    .ci-track img {
+      /* ~2.9:1 spreads — fix height only */
+      height: min(28vh, 240px);
+      width: auto;
+      max-width: none;
+      flex-shrink: 0;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      scroll-snap-align: start;
+      background: var(--bg-2);
+      object-fit: contain; /* never crop */
     }
     .deliver-grid {
       display: grid;
@@ -616,7 +762,7 @@
 
     .p4-visuals {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: 1.6fr 0.4fr;
       gap: 12px;
       min-height: 0;
       flex: 0 1 auto;
@@ -627,6 +773,177 @@
     .p4-visuals .frame img {
       object-fit: cover;
       object-position: top;
+    }
+
+    /* ========== P5 Impact ========== */
+    .p5-inner {
+      justify-content: center;
+      gap: clamp(24px, 4vh, 48px);
+    }
+    .p5-hero {
+      display: flex;
+      align-items: baseline;
+      gap: clamp(20px, 3vw, 48px);
+    }
+    .p5-num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(80px, 14vw, 180px);
+      line-height: 1;
+      color: var(--rose);
+      letter-spacing: -0.03em;
+    }
+    .p5-num span {
+      font-size: 0.55em;
+    }
+    .p5-hero-label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .p5-metric-name {
+      font-family: var(--sans);
+      font-size: clamp(18px, 2vw, 28px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .p5-source {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .p5-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--line-2);
+    }
+    .p5-contributions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(16px, 2.5vw, 32px);
+    }
+    .p5-contrib {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 4px;
+    }
+    .p5-contrib-n {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--rose);
+      opacity: 0.7;
+    }
+    .p5-contrib h4 {
+      font-family: var(--sans);
+      font-size: clamp(14px, 1.2vw, 17px);
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .p5-contrib p {
+      font-size: clamp(12px, 1vw, 14px);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .outcome-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 20px 0 4px;
+      border-top: 1px solid var(--line-2);
+      margin-top: 4px;
+    }
+    .outcome-stat--final {
+      margin-top: 8px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line-2);
+    }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300;
+      color: var(--rose);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label span {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    /* ── Deliver tabs ── */
+    .deliver-tabs-section { display: flex; flex-direction: column; gap: 14px; }
+    .deliver-heading {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 3.5vw, 48px);
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .deliver-tabs {
+      display: flex;
+      width: 100%;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .d-tab {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .d-tab.is-active { color: var(--ink); border-bottom-color: var(--rose); }
+    .d-tab:hover:not(.is-active) { color: var(--ink-2); }
+    .deliver-panel[hidden] { display: none; }
+
+    .deliverable-screenshots {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    .shot-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .shot-label {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .shot-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      display: block;
     }
 
     .impact-block {
@@ -732,6 +1049,7 @@
       .insight-stats,
       .deliver-grid,
       .p4-visuals,
+      .deliverable-screenshots,
       .impact-block {
         grid-template-columns: 1fr;
       }
@@ -753,7 +1071,7 @@
         <div>
           <p class="eyebrow">Case · 10 週年翻新 · Website</p>
           <h1 class="brand">康健基因</h1>
-          <p class="p1-title">十週年品牌翻新——讓 B2B 基因科技品牌，也說得進 B2C</p>
+          <p class="p1-title">十週年品牌翻新——協助 B2B 基因科技公司轉型 B2C</p>
           <div class="p1-chips">
             <span class="chip">Public Health ↔ Scientific Research</span>
             <span class="chip chip--rose">Lead · 4 個月</span>
@@ -918,12 +1236,10 @@
           <strong>② 路徑內</strong>：專有名詞與昂貴器材再進 <strong>Tab</strong>——專業仍在，但不擋 C 端入口。
         </div>
         <div class="insight-visual">
-          <div class="frame">
-            <img
-              src="./assets/hero-split-insight.jpg"
-              alt="Hero 分流：Public Health（左）與 Scientific Research（右）"
-            />
-          </div>
+          <img
+            src="./assets/hero-split-insight.jpg"
+            alt="Hero 分流：Public Health（左）與 Scientific Research（右）"
+          />
         </div>
       </div>
       <aside class="notes">
@@ -937,73 +1253,92 @@
         <p class="eyebrow">Delivery &amp; Impact</p>
         <h2 class="headline">十週年新形象 · 易用性調整後的官網</h2>
 
-        <div class="deliver-grid">
-          <div class="deliver-card">
-            <div class="n">01 · 品牌</div>
-            <h3>翻新氣象</h3>
-            <ul>
-              <li>十週年新企業形象（CI）</li>
-              <li>logo 以摩斯點線為骨，呼應 DNA 解碼者定位</li>
-              <li>橘色主調，跳脫生技慣用藍綠</li>
-            </ul>
+        <!-- Deliver tabs -->
+        <div class="deliver-tabs-section">
+          <h3 class="deliver-heading">Deliver</h3>
+          <div class="deliver-tabs" role="tablist">
+            <button class="d-tab is-active" data-tab="website" role="tab" aria-selected="true">官方網站</button>
+            <button class="d-tab" data-tab="ci" role="tab" aria-selected="false">企業識別系統</button>
           </div>
-          <div class="deliver-card">
-            <div class="n">02 · 官網 IA</div>
-            <h3>從 Hero 分流</h3>
-            <ul>
-              <li>Public Health ↔ Scientific Research</li>
-              <li>路徑內：名詞／器材 → Tab</li>
-              <li>流程插圖降低未知焦慮</li>
-            </ul>
+          <div class="deliver-panel" id="tab-website" role="tabpanel">
+            <div class="ci-rail ci-rail--lg">
+              <div class="ci-track">
+                <img src="./assets/website-01.png" alt="官方網站 01" />
+                <img src="./assets/website-02.png" alt="官方網站 02" />
+                <img src="./assets/website-03.png" alt="官方網站 03" />
+                <img src="./assets/website-04.png" alt="官方網站 04" />
+                <img src="./assets/website-05.png" alt="官方網站 05" />
+                <img src="./assets/website-06.png" alt="官方網站 06" />
+                <img src="./assets/website-07.png" alt="官方網站 07" />
+              </div>
+            </div>
           </div>
-          <div class="deliver-card">
-            <div class="n">03 · 系統</div>
-            <h3>可維護交付</h3>
-            <ul>
-              <li>CI 手冊 · 12 欄網格 · 元件</li>
-              <li>Handoff-ready</li>
-              <li>服務後續產品推廣</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="p4-visuals">
-          <div class="frame">
-            <img
-              src="./assets/hero-split.png"
-              alt="Hero 使用者分流：Public Health / Scientific Research"
-            />
-          </div>
-          <div class="frame">
-            <img
-              src="./assets/ci-logo-color.png"
-              alt="CI 系統：hgt logo 雙版本 + PANTONE 色票"
-              style="object-position: center top;"
-            />
+          <div class="deliver-panel" id="tab-ci" role="tabpanel" hidden>
+            <div class="ci-rail">
+              <div class="ci-track">
+                <img src="./assets/ci-01.png" alt="企業識別系統 01" />
+                <img src="./assets/ci-02.png" alt="企業識別系統 02" />
+                <img src="./assets/ci-03.png" alt="企業識別系統 03" />
+                <img src="./assets/ci-04.png" alt="企業識別系統 04" />
+                <img src="./assets/ci-05.png" alt="企業識別系統 05" />
+                <img src="./assets/ci-06.png" alt="企業識別系統 06" />
+                <img src="./assets/ci-07.png" alt="企業識別系統 07" />
+                <img src="./assets/ci-08.png" alt="企業識別系統 08" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="impact-block">
-          <div class="impact-list">
-            <h3>網站貢獻</h3>
-            <ul>
-              <li><strong>Hero 雙路徑</strong>：Public Health / Scientific Research，進站即分流</li>
-              <li><strong>易用性改層級</strong>：名詞與器材進 Tab，不擋 C 端推廣</li>
-              <li><strong>對齊商業目標</strong>：B2B 仍在、B2C 進得來、產品說得清</li>
-            </ul>
-            <p class="ga4-ph">GA4 占位：雙路徑點擊 · 服務／流程頁 · Tab 互動 — 有數再換上</p>
+      </div>
+      <aside class="notes">
+        落地：十週年新形象；官網從 Hero 就分流 Public Health 與 Scientific Research；路徑裡專有名詞與昂貴器材再進 tab。
+      </aside>
+    </section>
+
+    <!-- ========== P5 Impact ========== -->
+    <section class="slide p5" data-slide="5" data-index="05">
+      <div class="slide__inner p5-inner">
+        <p class="eyebrow">Impact</p>
+        <div class="p5-hero">
+          <div class="p5-num">↓ 30<span>%</span></div>
+          <div class="p5-hero-label">
+            <div class="p5-metric-name">跳出率下降</div>
+            <div class="p5-source">客戶 GA4 數據回報</div>
           </div>
-          <div class="asus-line">
-            <span>Takeaway · ASUS</span>
-            <p>先<strong>分流使用者</strong>，再決定規格放哪一層——Hero 選路，細節進 Tab，用測試驗證而不是全堆首屏。</p>
+        </div>
+        <div class="p5-divider"></div>
+        <div class="p5-contributions">
+          <div class="p5-contrib">
+            <div class="p5-contrib-n">01</div>
+            <h4>Hero 雙路徑</h4>
+            <p>Public Health / Scientific Research 進站即分流，兩端各走對的路</p>
+          </div>
+          <div class="p5-contrib">
+            <div class="p5-contrib-n">02</div>
+            <h4>易用性改層級</h4>
+            <p>專有名詞與器材進 Tab，不擋 C 端推廣，專業仍在、只是放對深度</p>
+          </div>
+          <div class="p5-contrib">
+            <div class="p5-contrib-n">03</div>
+            <h4>對齊商業目標</h4>
+            <p>B2B 仍在、B2C 進得來、產品說得清——一個官網服務兩種使用者</p>
           </div>
         </div>
       </div>
       <aside class="notes">
-        落地：十週年新形象；官網從 Hero 就分流 Public Health 與 Scientific Research；路徑裡專有名詞與昂貴器材再進 tab。貢獻是 B2B 與 B2C 並存、產品推廣不被術語牆擋住。對 ASUS：消費電子也有多種使用者——先分流，再談規格露出。
+        最終 impact：跳出率 ↓30%（客戶 GA4 回報）。三項貢獻：雙路徑分流、易用性改層級、B2B+B2C 並存。
       </aside>
     </section>
 
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lb" id="lb" hidden>
+    <button class="lb-close" id="lbClose" aria-label="關閉">×</button>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一張">‹</button>
+    <img class="lb-img" id="lbImg" src="" alt="" />
+    <button class="lb-nav lb-next" id="lbNext" aria-label="下一張">›</button>
+    <div class="lb-counter" id="lbCounter"></div>
   </div>
 
   <script>
@@ -1067,6 +1402,69 @@
           e.preventDefault();
           slides[total - 1].scrollIntoView({ behavior: "smooth" });
         }
+      });
+
+      // Deliver tabs
+      document.querySelectorAll(".d-tab").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var target = btn.dataset.tab;
+          document.querySelectorAll(".d-tab").forEach(function (b) {
+            b.classList.remove("is-active");
+            b.setAttribute("aria-selected", "false");
+          });
+          document.querySelectorAll(".deliver-panel").forEach(function (p) { p.hidden = true; });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-selected", "true");
+          var panel = document.getElementById("tab-" + target);
+          if (panel) panel.hidden = false;
+        });
+      });
+
+      // Lightbox
+      var lb = document.getElementById("lb");
+      var lbImg = document.getElementById("lbImg");
+      var lbPrev = document.getElementById("lbPrev");
+      var lbNext = document.getElementById("lbNext");
+      var lbClose = document.getElementById("lbClose");
+      var lbCounter = document.getElementById("lbCounter");
+      var lbImages = [];
+      var lbIndex = 0;
+
+      function lbOpen(imgs, idx) {
+        lbImages = imgs;
+        lbIndex = idx;
+        lbShow();
+        lb.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+      function lbShow() {
+        lbImg.src = lbImages[lbIndex].src;
+        lbImg.alt = lbImages[lbIndex].alt;
+        lbCounter.textContent = (lbIndex + 1) + " / " + lbImages.length;
+        lbPrev.style.opacity = lbIndex === 0 ? "0.2" : "";
+        lbNext.style.opacity = lbIndex === lbImages.length - 1 ? "0.2" : "";
+      }
+      function lbCloseFn() {
+        lb.hidden = true;
+        lbImg.src = "";
+        document.body.style.overflow = "";
+      }
+      lbClose.addEventListener("click", lbCloseFn);
+      lb.addEventListener("click", function(e) { if (e.target === lb) lbCloseFn(); });
+      lbPrev.addEventListener("click", function() { if (lbIndex > 0) { lbIndex--; lbShow(); } });
+      lbNext.addEventListener("click", function() { if (lbIndex < lbImages.length - 1) { lbIndex++; lbShow(); } });
+      document.addEventListener("keydown", function(e) {
+        if (lb.hidden) return;
+        if (e.key === "Escape") lbCloseFn();
+        if (e.key === "ArrowLeft") { if (lbIndex > 0) { lbIndex--; lbShow(); } }
+        if (e.key === "ArrowRight") { if (lbIndex < lbImages.length - 1) { lbIndex++; lbShow(); } }
+      });
+      document.querySelectorAll(".ci-track img").forEach(function(img) {
+        img.addEventListener("click", function() {
+          var track = img.closest(".ci-track");
+          var imgs = Array.prototype.slice.call(track.querySelectorAll("img"));
+          lbOpen(imgs, imgs.indexOf(img));
+        });
       });
 
       setPage(0);
